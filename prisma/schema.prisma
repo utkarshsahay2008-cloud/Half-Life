@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AuditReport {
+  id                    String   @id @default(cuid())
+  slug                  String?  @unique
+  title                 String
+  mode                  String   // "AUDIT" | "GENERATION"
+  rawText               String
+  patchedText           String
+  overallFreshnessScore Int      // 0 - 100
+  bifrostRoutingTrace   String   // serialized JSON
+  searchSkipSavingsMs   Int      // milliseconds saved via search-skip optimization
+  createdAt             DateTime @default(now())
+  claims                Claim[]
+}
+
+model Claim {
+  id                   String         @id @default(cuid())
+  auditId              String
+  audit                AuditReport    @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  claimIndex           Int
+  originalSpan         String
+  category             String         // API_VERSION | PRICING | LEADERSHIP | REGULATION | STATIC
+  halfLifeDays         Int
+  expiredAtDate        String         // ISO YYYY-MM-DD or "NEVER"
+  freshnessScore       Int            // 0 - 100
+  status               String         // FRESH | DECAYING | STALE
+  liveTruth            String
+  correctedReplacement String
+  adjudicatorReasoning String
+  sources              TavilySource[]
+}
+
+model TavilySource {
+  id             String  @id @default(cuid())
+  claimId        String
+  claim          Claim   @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  title          String
+  url            String
+  domain         String
+  publishedDate  String
+  snippet        String
+  relevanceScore Float
+}
