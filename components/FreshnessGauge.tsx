@@ -1,6 +1,6 @@
 import React from "react";
 import { formatScoreBadge } from "@/lib/utils";
-import { ShieldCheck, AlertTriangle, AlertCircle, Clock, Zap } from "lucide-react";
+import { ShieldCheck, AlertTriangle, AlertCircle, Clock, Zap, Gauge } from "lucide-react";
 
 interface FreshnessGaugeProps {
   score: number; // 0 - 100
@@ -34,20 +34,25 @@ export function FreshnessGauge({
   }
 
   return (
-    <div className="flex flex-col items-center justify-between rounded-2xl border border-slate-200/80 bg-white/80 p-5 shadow-sm backdrop-blur-md">
-      <div className="w-full flex items-center justify-between border-b border-slate-100 pb-3">
-        <span className="text-xs font-bold tracking-wider uppercase text-slate-700">
-          Freshness Index
-        </span>
-        <div className="flex items-center gap-1 font-mono text-[11px] text-slate-500">
-          <Clock className="h-3.5 w-3.5 text-slate-400" />
+    <div className="flex flex-col items-center justify-between rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
+      <div className="w-full flex items-center justify-between border-b border-slate-100 pb-3.5">
+        <div className="flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
+            <Gauge className="h-3.5 w-3.5" />
+          </div>
+          <span className="text-xs font-bold tracking-wider uppercase text-slate-800">
+            Factual Freshness Index
+          </span>
+        </div>
+        <div className="flex items-center gap-1 font-mono text-[11px] text-slate-500 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-200/60">
+          <Clock className="h-3 w-3 text-slate-400" />
           <span>{simulatedDate}</span>
         </div>
       </div>
 
       {/* Circular Radial Gauge */}
       <div className="relative my-4 flex items-center justify-center">
-        <svg className="h-44 w-44 -rotate-90 transform" viewBox="0 0 160 160">
+        <svg className="h-44 w-44 -rotate-90 transform select-none" viewBox="0 0 160 160">
           <defs>
             <linearGradient id="gaugeGradientEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#10B981" />
@@ -61,8 +66,8 @@ export function FreshnessGauge({
               <stop offset="0%" stopColor="#F43F5E" />
               <stop offset="100%" stopColor="#9333EA" />
             </linearGradient>
-            <filter id="gaugeGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor={strokeColor} floodOpacity="0.3" />
+            <filter id="gaugeGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor={strokeColor} floodOpacity="0.25" />
             </filter>
           </defs>
 
@@ -93,14 +98,14 @@ export function FreshnessGauge({
 
         {/* Center score readout */}
         <div className="absolute flex flex-col items-center justify-center text-center">
-          <div className="flex items-center gap-1">
-            <span className="font-mono text-4xl font-extrabold tracking-tight text-slate-900">
+          <div className="flex items-center gap-0.5">
+            <span className="font-mono text-4xl font-black tracking-tight text-slate-900">
               {score}
             </span>
-            <span className="text-xl font-medium text-slate-400">%</span>
+            <span className="text-xl font-bold text-slate-400">%</span>
           </div>
           <span
-            className={`mt-1 inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-[11px] font-bold tracking-wide uppercase shadow-xs ${badge.badgeClass}`}
+            className={`mt-1 inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wide uppercase shadow-2xs ${badge.badgeClass}`}
           >
             {score >= 80 && <ShieldCheck className="h-3 w-3 text-emerald-600" />}
             {score >= 45 && score < 80 && <AlertTriangle className="h-3 w-3 text-amber-600" />}
@@ -111,29 +116,29 @@ export function FreshnessGauge({
       </div>
 
       {/* Claim Breakdown Stats */}
-      <div className="grid w-full grid-cols-3 gap-2 border-t border-slate-100 pt-3 text-center">
-        <div className="rounded-xl bg-emerald-50/60 p-2 border border-emerald-100">
+      <div className="grid w-full grid-cols-3 gap-2 border-t border-slate-100 pt-3.5 text-center">
+        <div className="rounded-2xl bg-gradient-to-b from-emerald-50/70 to-white p-2.5 border border-emerald-100/90 shadow-2xs">
           <span className="block font-mono text-base font-bold text-emerald-700">{freshCount}</span>
-          <span className="text-[10px] font-medium text-emerald-600 uppercase">Fresh</span>
+          <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Fresh</span>
         </div>
-        <div className="rounded-xl bg-amber-50/60 p-2 border border-amber-100">
+        <div className="rounded-2xl bg-gradient-to-b from-amber-50/70 to-white p-2.5 border border-amber-100/90 shadow-2xs">
           <span className="block font-mono text-base font-bold text-amber-700">{decayingCount}</span>
-          <span className="text-[10px] font-medium text-amber-600 uppercase">Decaying</span>
+          <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Decaying</span>
         </div>
-        <div className="rounded-xl bg-rose-50/60 p-2 border border-rose-100">
+        <div className="rounded-2xl bg-gradient-to-b from-rose-50/70 to-white p-2.5 border border-rose-100/90 shadow-2xs">
           <span className="block font-mono text-base font-bold text-rose-700">{staleCount}</span>
-          <span className="text-[10px] font-medium text-rose-600 uppercase">Stale</span>
+          <span className="text-[10px] font-bold text-rose-600 uppercase tracking-wider">Stale</span>
         </div>
       </div>
 
       {/* Search-Skip Optimization Badge */}
       {searchSkipSavingsMs > 0 && (
-        <div className="mt-3 flex w-full items-center justify-between rounded-xl border border-teal-200/70 bg-teal-50/60 px-3 py-2">
+        <div className="mt-3.5 flex w-full items-center justify-between rounded-2xl border border-teal-200/80 bg-gradient-to-r from-teal-50/70 via-emerald-50/40 to-white px-3 py-2 shadow-2xs">
           <div className="flex items-center gap-1.5">
             <Zap className="h-3.5 w-3.5 text-teal-600" />
-            <span className="text-[11px] font-semibold text-teal-900">Search-Skip Optimizer:</span>
+            <span className="text-[11px] font-bold text-teal-950">Search-Skip Optimizer:</span>
           </div>
-          <span className="font-mono text-[11px] font-bold text-teal-700">
+          <span className="rounded-md bg-teal-100/80 px-2 py-0.5 font-mono text-[10px] font-bold text-teal-900 border border-teal-200/70">
             +{searchSkipSavingsMs}ms Saved
           </span>
         </div>

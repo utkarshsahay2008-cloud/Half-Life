@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Activity, ChevronDown, ChevronUp, Cpu, Layers, Clock, Zap } from "lucide-react";
+import { Activity, ChevronDown, ChevronUp, Cpu, Layers, Clock, Zap, ShieldCheck } from "lucide-react";
 import { CircuitSplinesPattern } from "./CardGraphics";
 
 export interface TelemetryTraceItem {
@@ -29,15 +29,15 @@ export function TelemetryDrawer({
   const totalLatencyMs = traces.reduce((acc, t) => acc + (t.latencyMs || 0), 0);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-blue-200/80 bg-white/85 p-5 shadow-sm backdrop-blur-md">
+    <div className="relative overflow-hidden rounded-3xl border border-blue-200/80 bg-gradient-to-b from-white/95 to-blue-50/30 p-5 sm:p-6 shadow-sm shadow-blue-500/5 backdrop-blur-xl">
       <CircuitSplinesPattern />
 
       <div className="relative z-10">
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
-              <Activity className="h-4 w-4" />
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+              <Activity className="h-4 w-4 animate-pulse" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -49,24 +49,24 @@ export function TelemetryDrawer({
                 </span>
               </div>
               <p className="text-[11px] text-slate-500">
-                Live routing: <span className="font-semibold text-slate-700">groq/openai/gpt-oss-20b</span> (extraction) → <span className="font-semibold text-slate-700">groq/openai/gpt-oss-120b</span> (reasoning)
+                Live routing: <span className="font-semibold text-slate-700">groq/openai/gpt-oss-20b</span> (extraction) → <span className="font-semibold text-slate-700">groq/openai/gpt-oss-120b</span> (adjudication)
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 font-mono text-xs text-slate-600">
-              <span className="rounded-md bg-slate-100 px-2 py-1">
+          <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <span className="rounded-xl border border-slate-200/80 bg-white px-2.5 py-1 text-slate-700 shadow-2xs">
                 ⏱ {totalLatencyMs}ms
               </span>
-              <span className="rounded-md bg-slate-100 px-2 py-1">
+              <span className="rounded-xl border border-slate-200/80 bg-white px-2.5 py-1 text-slate-700 shadow-2xs">
                 ⚡ {totalTokens} tokens
               </span>
             </div>
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 transition"
+              className="flex items-center gap-1 rounded-xl border border-slate-200/80 bg-white px-3 py-1 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition active:scale-95"
             >
               <span>{isOpen ? "Hide Route Graph" : "Inspect Gateway Traces"}</span>
               {isOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
@@ -76,35 +76,35 @@ export function TelemetryDrawer({
 
         {/* Collapsible Trace Breakdown */}
         {isOpen && (
-          <div className="mt-4 space-y-3 border-t border-slate-100 pt-4">
+          <div className="mt-4 space-y-3.5 border-t border-slate-100 pt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {traces.map((trace, idx) => (
                 <div
                   key={idx}
-                  className="rounded-xl border border-slate-200/90 bg-slate-50/70 p-3 text-xs"
+                  className="rounded-2xl border border-slate-200/80 bg-white/95 p-3.5 text-xs shadow-2xs"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="inline-flex items-center gap-1 rounded bg-blue-100 px-1.5 py-0.5 font-mono text-[10px] font-bold text-blue-800">
+                    <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-0.5 font-mono text-[10px] font-bold text-blue-700 border border-blue-200/70">
                       <Layers className="h-3 w-3" />
                       Stage {idx + 1}: {trace.stage}
                     </span>
-                    <span className="font-mono text-[11px] font-semibold text-slate-500">
+                    <span className="font-mono text-[11px] font-bold text-slate-600">
                       {trace.latencyMs}ms
                     </span>
                   </div>
 
-                  <div className="space-y-1 text-slate-600">
+                  <div className="space-y-1.5 text-slate-600 text-[11px]">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Target Model:</span>
-                      <span className="font-mono font-medium text-slate-800">{trace.model}</span>
+                      <span className="text-slate-400">Target Model:</span>
+                      <span className="font-mono font-bold text-slate-800">{trace.model}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Gateway Route:</span>
+                      <span className="text-slate-400">Gateway Route:</span>
                       <span className="font-medium text-slate-700">{trace.routedVia}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-500">Tokens Billed:</span>
-                      <span className="font-mono font-semibold text-slate-800">{trace.tokensUsed}</span>
+                      <span className="text-slate-400">Tokens Billed:</span>
+                      <span className="font-mono font-bold text-slate-800">{trace.tokensUsed}</span>
                     </div>
                   </div>
                 </div>
@@ -112,16 +112,18 @@ export function TelemetryDrawer({
             </div>
 
             {/* Tavily Search-Skip Architecture highlight */}
-            <div className="rounded-xl border border-teal-200 bg-teal-50/70 p-3 text-xs text-teal-900">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Zap className="h-4 w-4 text-teal-600" />
-                  <span className="font-semibold">Tavily Search-Skip Engine:</span>
-                  <span className="text-teal-700">
-                    Timeless & mathematical invariant claims bypass live external search.
+            <div className="rounded-2xl border border-teal-200/90 bg-gradient-to-r from-teal-50/70 via-emerald-50/50 to-white p-3.5 text-xs text-teal-950 shadow-2xs">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-md bg-teal-600 text-white shadow-2xs">
+                    <Zap className="h-3 w-3" />
+                  </div>
+                  <span className="font-bold">Tavily Search-Skip Architecture:</span>
+                  <span className="text-teal-800 font-medium hidden sm:inline">
+                    Timeless & mathematical invariant claims bypass external search.
                   </span>
                 </div>
-                <span className="font-mono font-bold text-teal-800">
+                <span className="rounded-lg bg-teal-100/80 px-2 py-0.5 font-mono font-bold text-teal-900 border border-teal-200">
                   +{searchSkipSavingsMs}ms latency saved
                 </span>
               </div>

@@ -19,11 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="flex min-h-full flex-col bg-[#F8FAFC] antialiased">
-        {/* Atmospheric Refraction Ambient Light Washes */}
-        <div className="ambient-glow-mesh">
+        {/* Atmospheric Refraction Ambient Light Washes & Delicate Grid */}
+        <div className="ambient-glow-mesh bg-subtle-grid">
           <div className="ambient-orb-1" />
           <div className="ambient-orb-2" />
           <div className="ambient-orb-3" />
+          <div className="ambient-orb-4" />
         </div>
 
         {/* Global Sticky Glass Header */}

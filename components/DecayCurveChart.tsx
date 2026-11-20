@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { TrendingDown, Activity, Sparkles, ShieldCheck, Clock, Info } from "lucide-react";
+import { TrendingDown, Activity, Sparkles, ShieldCheck, Clock, Info, Zap } from "lucide-react";
 
 interface ClaimItem {
   id?: string;
@@ -20,46 +20,51 @@ interface DecayCurveChartProps {
   simulatedDate: string; // YYYY-MM-DD
 }
 
-const CATEGORY_COLORS: Record<string, { stroke: string; fill: string; bg: string; text: string; badge: string; name: string }> = {
+const CATEGORY_COLORS: Record<string, { stroke: string; fill: string; bg: string; text: string; badge: string; name: string; velocity: string }> = {
   API: {
     stroke: "#3B82F6", // blue-500
     fill: "rgba(59, 130, 246, 0.12)",
     bg: "bg-blue-500",
     text: "text-blue-700",
-    badge: "border-blue-200 bg-blue-50 text-blue-700",
-    name: "API & SDK Endpoints (~90d)",
+    badge: "border-blue-200 bg-blue-50/80 text-blue-800",
+    name: "API & SDK Endpoints",
+    velocity: "Fast Decay (~90d)",
   },
   PRICING: {
     stroke: "#F59E0B", // amber-500
     fill: "rgba(245, 158, 11, 0.12)",
     bg: "bg-amber-500",
     text: "text-amber-700",
-    badge: "border-amber-200 bg-amber-50 text-amber-700",
-    name: "Pricing Rate Cards (~60d)",
+    badge: "border-amber-200 bg-amber-50/80 text-amber-800",
+    name: "Pricing Rate Cards",
+    velocity: "Hyper Decay (~60d)",
   },
   LEADERSHIP: {
     stroke: "#8B5CF6", // purple-500
     fill: "rgba(139, 92, 246, 0.12)",
     bg: "bg-purple-500",
     text: "text-purple-700",
-    badge: "border-purple-200 bg-purple-50 text-purple-700",
-    name: "Corporate Leadership (~180d)",
+    badge: "border-purple-200 bg-purple-50/80 text-purple-800",
+    name: "Leadership & Org",
+    velocity: "Medium Decay (~180d)",
   },
   REGULATION: {
     stroke: "#EC4899", // pink-500
     fill: "rgba(236, 72, 153, 0.12)",
     bg: "bg-pink-500",
     text: "text-pink-700",
-    badge: "border-pink-200 bg-pink-50 text-pink-700",
-    name: "AI Safety & Regulations (~240d)",
+    badge: "border-pink-200 bg-pink-50/80 text-pink-800",
+    name: "AI Safety & Law",
+    velocity: "Gradual Decay (~240d)",
   },
   STATIC: {
     stroke: "#10B981", // emerald-500
     fill: "rgba(16, 185, 129, 0.12)",
     bg: "bg-emerald-500",
     text: "text-emerald-700",
-    badge: "border-emerald-200 bg-emerald-50 text-emerald-700",
-    name: "Timeless Invariants (Static)",
+    badge: "border-emerald-200 bg-emerald-50/80 text-emerald-800",
+    name: "Timeless Invariants",
+    velocity: "Static (Zero Decay)",
   },
 };
 
@@ -70,6 +75,7 @@ const DEFAULT_CATEGORY_STYLE = {
   text: "text-slate-700",
   badge: "border-slate-200 bg-slate-50 text-slate-700",
   name: "General Claim",
+  velocity: "Standard",
 };
 
 export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps) {
@@ -84,7 +90,6 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
   // Time boundaries: 2023-06-01 to 2026-12-01 (approx 42 months)
   const START_EPOCH = new Date("2023-06-01").getTime();
   const END_EPOCH = new Date("2026-12-01").getTime();
-  const TOTAL_DURATION_DAYS = (END_EPOCH - START_EPOCH) / (1000 * 60 * 60 * 24);
 
   // Current simulation marker position
   const simEpoch = new Date(simulatedDate).getTime() || END_EPOCH;
@@ -93,7 +98,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
   // SVG dimensions
   const SVG_WIDTH = 760;
   const SVG_HEIGHT = 220;
-  const PADDING = { top: 20, right: 30, bottom: 35, left: 45 };
+  const PADDING = { top: 22, right: 30, bottom: 35, left: 45 };
   const CHART_WIDTH = SVG_WIDTH - PADDING.left - PADDING.right;
   const CHART_HEIGHT = SVG_HEIGHT - PADDING.top - PADDING.bottom;
 
@@ -175,32 +180,32 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
   const simMarkerX = PADDING.left + simRatio * CHART_WIDTH;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-sm backdrop-blur-md">
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 text-indigo-700 border border-indigo-200/80 shadow-2xs">
             <TrendingDown className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                Mathematical Temporal Decay Dynamics
+                Mathematical Factual Decay Trajectories
               </h3>
-              <span className="font-mono text-[10px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200/70 rounded-full px-2 py-0.5">
-                N(t) = N₀ · (½)^(t/t½)
+              <span className="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50/80 border border-indigo-200/70 rounded-full px-2.5 py-0.5 shadow-2xs">
+                N(t) = N₀ · (½)^(t / t½)
               </span>
             </div>
             <p className="text-[11px] text-slate-500">
-              Simulated half-life decay trajectories for active claims across chronological eras.
+              Calculates logarithmic entropy decay across API versions, pricing rate cards, leadership, and regulatory lifecycles.
             </p>
           </div>
         </div>
 
         {/* Dynamic Status at current simulation date */}
         <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="text-slate-500">Chronometer Needle:</span>
-          <span className="rounded-md bg-slate-900 px-2 py-1 font-bold text-white shadow-xs">
+          <span className="text-slate-400 font-medium">Scrubber Needle:</span>
+          <span className="rounded-xl bg-gradient-to-r from-slate-900 to-indigo-950 px-3 py-1 font-bold text-white shadow-xs">
             {simulatedDate}
           </span>
         </div>
@@ -223,14 +228,15 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                 x2="0%"
                 y2="100%"
               >
-                <stop offset="0%" stopColor={style.stroke} stopOpacity="0.22" />
+                <stop offset="0%" stopColor={style.stroke} stopOpacity="0.25" />
+                <stop offset="60%" stopColor={style.stroke} stopOpacity="0.08" />
                 <stop offset="100%" stopColor={style.stroke} stopOpacity="0.01" />
               </linearGradient>
             ))}
 
             {/* Needle glow filter */}
-            <filter id="needleGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="#4F46E5" floodOpacity="0.4" />
+            <filter id="needleGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#4F46E5" floodOpacity="0.4" />
             </filter>
           </defs>
 
@@ -272,7 +278,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
             opacity="0.65"
           />
           <text
-            x={PADDING.left + CHART_WIDTH - 4}
+            x={PADDING.left + CHART_WIDTH - 6}
             y={PADDING.top + CHART_HEIGHT - 0.45 * CHART_HEIGHT - 4}
             textAnchor="end"
             className="fill-rose-500 font-mono text-[9px] font-bold"
@@ -290,7 +296,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                   y1={PADDING.top}
                   x2={x}
                   y2={PADDING.top + CHART_HEIGHT}
-                  stroke="#F1F5F9"
+                  stroke="#F8FAFC"
                   strokeWidth="1"
                 />
                 <line
@@ -299,13 +305,13 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                   x2={x}
                   y2={PADDING.top + CHART_HEIGHT + 4}
                   stroke="#CBD5E1"
-                  strokeWidth="1"
+                  strokeWidth="1.5"
                 />
                 <text
                   x={x}
                   y={PADDING.top + CHART_HEIGHT + 16}
                   textAnchor="middle"
-                  className="fill-slate-500 font-mono text-[9px] font-medium"
+                  className="fill-slate-500 font-mono text-[9px] font-semibold"
                 >
                   {tick.label}
                 </text>
@@ -327,7 +333,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                   d={pathD}
                   fill="none"
                   stroke={style.stroke}
-                  strokeWidth="2.5"
+                  strokeWidth="2.75"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
@@ -340,10 +346,10 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                       key={pIdx}
                       cx={pt.x}
                       cy={pt.y}
-                      r="3.5"
+                      r="4"
                       fill="#FFFFFF"
                       stroke={style.stroke}
-                      strokeWidth="2"
+                      strokeWidth="2.5"
                       className="cursor-pointer transition-transform hover:scale-150"
                       onMouseEnter={() =>
                         setHoveredPoint({
@@ -373,57 +379,57 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
               strokeDasharray="4 2"
             />
             {/* Top pointer marker */}
-            <circle cx={simMarkerX} cy={PADDING.top - 6} r="4.5" fill="#4F46E5" />
-            <circle cx={simMarkerX} cy={PADDING.top - 6} r="2" fill="#FFFFFF" />
+            <circle cx={simMarkerX} cy={PADDING.top - 6} r="5" fill="#4F46E5" />
+            <circle cx={simMarkerX} cy={PADDING.top - 6} r="2.5" fill="#FFFFFF" />
 
             {/* Bottom pointer marker */}
-            <circle cx={simMarkerX} cy={PADDING.top + CHART_HEIGHT + 6} r="4.5" fill="#4F46E5" />
+            <circle cx={simMarkerX} cy={PADDING.top + CHART_HEIGHT + 6} r="5" fill="#4F46E5" />
           </g>
 
           {/* Hover Tooltip Popup within SVG */}
           {hoveredPoint && (
-            <g transform={`translate(${Math.min(hoveredPoint.x + 10, SVG_WIDTH - 140)}, ${Math.max(hoveredPoint.y - 45, 10)})`}>
+            <g transform={`translate(${Math.min(hoveredPoint.x + 10, SVG_WIDTH - 150)}, ${Math.max(hoveredPoint.y - 48, 8)})`}>
               <rect
-                width="130"
-                height="42"
-                rx="6"
+                width="140"
+                height="44"
+                rx="8"
                 fill="#0F172A"
-                className="shadow-lg"
+                className="shadow-xl"
               />
-              <text x="8" y="16" fill="#F8FAFC" className="font-mono text-[9px] font-bold">
+              <text x="10" y="18" fill="#F8FAFC" className="font-mono text-[10px] font-bold">
                 {hoveredPoint.category}: {hoveredPoint.score}% Fresh
               </text>
-              <text x="8" y="30" fill="#94A3B8" className="font-mono text-[8px]">
-                Date: {hoveredPoint.date}
+              <text x="10" y="32" fill="#94A3B8" className="font-mono text-[9px]">
+                Sim Date: {hoveredPoint.date}
               </text>
             </g>
           )}
         </svg>
       </div>
 
-      {/* Category Pills & Decay Stats Legend */}
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 border-t border-slate-100 pt-3">
+      {/* Category Pills & Decay Velocity Cards */}
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 border-t border-slate-100 pt-3.5">
         {categoriesPresent.map(({ category, halfLifeDays, count, style }) => {
           return (
             <div
               key={category}
-              className="flex items-center gap-2 rounded-xl border border-slate-200/70 bg-slate-50/70 px-2.5 py-1.5 transition-all hover:bg-white hover:shadow-xs"
+              className="flex items-center gap-2.5 rounded-2xl border border-slate-200/70 bg-gradient-to-r from-white to-slate-50/50 p-2.5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs"
             >
               <div
-                className="h-2.5 w-2.5 rounded-full shrink-0 shadow-xs"
+                className="h-3 w-3 rounded-full shrink-0 shadow-2xs ring-2 ring-white"
                 style={{ backgroundColor: style.stroke }}
               />
               <div className="overflow-hidden">
-                <div className="flex items-center gap-1">
-                  <span className="font-mono text-[10px] font-bold text-slate-800 truncate">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-mono text-[11px] font-bold text-slate-900 truncate">
                     {category}
                   </span>
-                  <span className="rounded bg-white px-1 font-mono text-[9px] text-slate-500 border border-slate-200">
+                  <span className="rounded-md bg-slate-100 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-slate-600 border border-slate-200">
                     {count}
                   </span>
                 </div>
                 <span className="block font-mono text-[9px] text-slate-500 truncate">
-                  {halfLifeDays > 0 ? `t½ = ${halfLifeDays}d` : "Static / ∞"}
+                  {halfLifeDays > 0 ? `t½ = ${halfLifeDays}d (${style.velocity})` : "Static / ∞"}
                 </span>
               </div>
             </div>
