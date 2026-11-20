@@ -1,3 +1,4 @@
+import "@/lib/polyfills";
 import { prisma } from "@/lib/prisma";
 import { InteractiveAuditWorkspace } from "@/components/InteractiveAuditWorkspace";
 import { Sparkles, Activity, Globe, ShieldAlert, Cpu } from "lucide-react";
@@ -5,22 +6,10 @@ import { Sparkles, Activity, Globe, ShieldAlert, Cpu } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  // Fetch default specimen (spec-api-drift or first available)
-  let initialAudit = await prisma.auditReport.findFirst({
-    where: { slug: "spec-api-drift" },
-    include: {
-      claims: {
-        orderBy: { claimIndex: "asc" },
-        include: {
-          sources: true,
-        },
-      },
-    },
-  });
-
-  if (!initialAudit) {
+  let initialAudit = null;
+  try {
     initialAudit = await prisma.auditReport.findFirst({
-      orderBy: { createdAt: "desc" },
+      where: { slug: "spec-api-drift" },
       include: {
         claims: {
           orderBy: { claimIndex: "asc" },
@@ -30,6 +19,22 @@ export default async function HomePage() {
         },
       },
     });
+
+    if (!initialAudit) {
+      initialAudit = await prisma.auditReport.findFirst({
+        orderBy: { createdAt: "desc" },
+        include: {
+          claims: {
+            orderBy: { claimIndex: "asc" },
+            include: {
+              sources: true,
+            },
+          },
+        },
+      });
+    }
+  } catch (err) {
+    console.warn("[HomePage] Fallback to seeded audit structure:", err);
   }
 
   // Fallback structure if database is completely empty
