@@ -11,11 +11,19 @@ interface ModalDialogProps {
 export function ModalDialog({ children }: ModalDialogProps) {
   const router = useRouter();
 
+  const handleClose = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
+  };
+
   // Handle ESC key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        router.back();
+        handleClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -26,14 +34,14 @@ export function ModalDialog({ children }: ModalDialogProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
-        onClick={() => router.back()}
+        onClick={handleClose}
         className="fixed inset-0 bg-slate-950/30 backdrop-blur-md transition-opacity animate-in fade-in duration-200"
       />
 
       {/* Modal Surface */}
       <div className="relative z-10 w-full max-w-3xl rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50/90 p-6 sm:p-8 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl ring-1 ring-slate-900/5 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <button
-          onClick={() => router.back()}
+          onClick={handleClose}
           className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition active:scale-95"
           aria-label="Close modal"
         >

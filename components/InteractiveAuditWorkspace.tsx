@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -120,6 +120,16 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
 
   // Time-Travel Chronometer state (defaults to today)
   const [simulatedDate, setSimulatedDate] = useState("2026-11-20");
+
+  // Keep state synchronized with server-rendered initialAudit
+  useEffect(() => {
+    if (initialAudit) {
+      setCurrentAudit(initialAudit);
+      if (initialAudit.rawText) {
+        setAuditInputText(initialAudit.rawText);
+      }
+    }
+  }, [initialAudit]);
 
   // Calculate dynamic freshness based on simulated date
   const dynamicClaims = useMemo(() => {

@@ -1,3 +1,4 @@
+import "./lib/polyfills";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
