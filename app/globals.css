@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-jakarta: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+body {
+  background-color: #F8FAFC;
+  color: #0F172A;
+  font-family: var(--font-jakarta);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Atmospheric Refraction Background Lights */
+.ambient-glow-mesh {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ambient-orb-1 {
+  position: absolute;
+  top: -10%;
+  left: 15%;
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0) 70%);
+  filter: blur(60px);
+}
+
+.ambient-orb-2 {
+  position: absolute;
+  top: 20%;
+  right: -5%;
+  width: 650px;
+  height: 650px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.09) 0%, rgba(14, 165, 233, 0) 70%);
+  filter: blur(75px);
+}
+
+.ambient-orb-3 {
+  position: absolute;
+  bottom: 5%;
+  left: 5%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.06) 0%, rgba(244, 63, 94, 0) 70%);
+  filter: blur(70px);
+}
+
+/* Glassmorphism Surface Primitives */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.04);
+}
+
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 24px -2px rgba(15, 23, 42, 0.03);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  background-color: rgba(255, 255, 255, 0.92);
+  border-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 12px 36px -4px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Custom Refined Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
