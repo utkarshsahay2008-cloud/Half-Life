@@ -149,7 +149,7 @@ export function ClaimModalContent({
             BF
           </div>
           <span className="text-xs font-bold uppercase tracking-wider text-blue-900">
-            Bifrost Reasoning (Routed to openai/gpt-4o)
+            Bifrost Reasoning (Routed to groq/openai/gpt-oss-120b)
           </span>
         </div>
         <p className="text-xs leading-relaxed text-slate-700">

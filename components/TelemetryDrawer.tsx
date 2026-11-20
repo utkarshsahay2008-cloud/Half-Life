@@ -49,7 +49,7 @@ export function TelemetryDrawer({
                 </span>
               </div>
               <p className="text-[11px] text-slate-500">
-                Live routing: <span className="font-semibold text-slate-700">gpt-4o-mini</span> (extraction) → <span className="font-semibold text-slate-700">gpt-4o</span> (temporal reasoning)
+                Live routing: <span className="font-semibold text-slate-700">groq/openai/gpt-oss-20b</span> (extraction) → <span className="font-semibold text-slate-700">groq/openai/gpt-oss-120b</span> (reasoning)
               </p>
             </div>
           </div>

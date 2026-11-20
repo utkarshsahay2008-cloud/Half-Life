@@ -11,7 +11,7 @@ import { searchTavilyForClaim, TavilySearchResult } from "@/lib/services/tavily"
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { prompt, model = "openai/gpt-4o-mini" } = body;
+    const { prompt, model = "groq/openai/gpt-oss-20b" } = body;
 
     if (!prompt || typeof prompt !== "string" || prompt.trim().length === 0) {
       return NextResponse.json({ error: "Prompt is required." }, { status: 400 });
@@ -24,12 +24,12 @@ export async function POST(req: NextRequest) {
     routingTraces.push(generationResult.trace);
     const generatedText = generationResult.text;
 
-    // 2. Multi-Model Claim Extraction via gpt-4o-mini
+    // 2. Multi-Model Claim Extraction via groq/openai/gpt-oss-20b
     const extractionResult = await extractClaimsWithBifrost(generatedText);
     routingTraces.push(extractionResult.trace);
     const extractedClaims = extractionResult.claims;
 
-    // 3. Tavily Grounding & High-Reasoning Adjudication via gpt-4o
+    // 3. Tavily Grounding & High-Reasoning Adjudication via groq/openai/gpt-oss-120b
     let totalSearchSkipSavingsMs = 0;
     const processedClaims: Array<{
       claimIndex: number;

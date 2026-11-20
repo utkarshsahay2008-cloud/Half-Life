@@ -81,7 +81,7 @@ export default async function HomePage() {
           <div className="flex flex-wrap gap-2 pt-1 text-xs font-medium">
             <div className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-slate-700">
               <Cpu className="h-3.5 w-3.5 text-blue-600" />
-              <span>Multi-Model Routing: gpt-4o-mini → gpt-4o</span>
+              <span>Multi-Model Routing: groq/gpt-oss-20b → groq/gpt-oss-120b</span>
             </div>
             <div className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-slate-700">
               <Globe className="h-3.5 w-3.5 text-teal-600" />

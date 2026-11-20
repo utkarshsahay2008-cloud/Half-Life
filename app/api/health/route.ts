@@ -17,8 +17,8 @@ export async function GET() {
       latencyMs: bifrostHealth.latencyMs,
       error: bifrostHealth.error || null,
       defaultModelRouting: {
-        extractor: "openai/gpt-4o-mini (JSON mode)",
-        adjudicator: "openai/gpt-4o (Reasoning)",
+        extractor: "groq/openai/gpt-oss-20b (Claim Decomposition)",
+        adjudicator: "groq/openai/gpt-oss-120b (Reasoning Adjudication)",
       },
     },
     tavily: {

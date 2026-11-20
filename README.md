@@ -16,9 +16,9 @@ Large Language Models (LLMs) output answers with high confidence, yet real-world
 - **Mathematical Invariants** never decay (`STATIC`)
 
 **HALF-LIFE** solves this by establishing a real-time temporal verification and freshness adjudication pipeline:
-1. **Bifrost Multi-Model Routing:** Decomposes answers into atomic claims with fast/cost-effective `openai/gpt-4o-mini`.
+1. **Bifrost Multi-Model Routing:** Decomposes answers into atomic claims with fast/cost-effective `groq/openai/gpt-oss-20b`.
 2. **Tavily Grounding & Search-Skip Optimization:** Queries Tavily's live index for dynamic facts, while bypassing search for timeless static facts (saving ~420ms and token costs).
-3. **Bifrost High-Reasoning Adjudicator:** Evaluates evidence using `openai/gpt-4o` to calculate a 0–100 Freshness Score, determine exact expiration dates, and formulate drop-in verified replacements.
+3. **Bifrost High-Reasoning Adjudicator:** Evaluates evidence using `groq/openai/gpt-oss-120b` to calculate a 0–100 Freshness Score, determine exact expiration dates, and formulate drop-in verified replacements.
 4. **Time-Travel Chronometer:** An interactive scrubber allowing developers and evaluators to travel from 2023 through 2026 to visualize knowledge decay in real time.
 
 ---
@@ -30,7 +30,7 @@ flowchart TD
     UserPrompt["User Prompt or LLM Answer"] --> BifrostGateway["Bifrost Gateway (@maximhq/bifrost)"]
     
     subgraph Bifrost_Routing ["Bifrost Multi-Model Routing"]
-        BifrostGateway --> Extraction["Stage 1: Claim Decomposition (gpt-4o-mini)\nJSON mode extracts atomic claims & categories"]
+        BifrostGateway --> Extraction["Stage 1: Claim Decomposition (groq/openai/gpt-oss-20b)\nExtracts atomic claims & categories"]
     end
 
     Extraction --> Categorizer{"Claim Category?"}
@@ -40,7 +40,7 @@ flowchart TD
         Categorizer -- "STATIC (Timeless Laws)" --> SearchSkip["Search-Skip Optimization\nBypasses search, saves +420ms & API tokens"]
     end
 
-    TavilySearch --> Adjudicator["Stage 2: Freshness Adjudication (gpt-4o)\nCalculates 0-100 Score, Expiration Date, Reasoning"]
+    TavilySearch --> Adjudicator["Stage 2: Freshness Adjudication (groq/openai/gpt-oss-120b)\nCalculates 0-100 Score, Expiration Date, Reasoning"]
     SearchSkip --> Adjudicator
 
     Adjudicator --> Database[("Prisma SQLite DB (AuditReport, Claim, TavilySource)")]
@@ -122,7 +122,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📡 API Reference
 
-- `POST /api/audit`: Audits raw AI text via `Bifrost gpt-4o-mini` (extraction), `Tavily` (search grounding), and `Bifrost gpt-4o` (adjudication). Saves to SQLite.
+- `POST /api/audit`: Audits raw AI text via `Bifrost groq/openai/gpt-oss-20b` (extraction), `Tavily` (search grounding), and `Bifrost groq/openai/gpt-oss-120b` (adjudication). Saves to SQLite.
 - `POST /api/generate`: Generates text using Bifrost Gateway and immediately audits it for temporal decay.
 - `GET /api/audit/[auditId]`: Retrieves an audit report by ID or slug with nested claims and Tavily citations (implements Next.js 16 async route params).
 - `GET /api/health`: Live connectivity check for Bifrost Gateway and Tavily API.

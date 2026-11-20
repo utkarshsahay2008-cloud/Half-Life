@@ -48,43 +48,63 @@ export function FreshnessGauge({
       {/* Circular Radial Gauge */}
       <div className="relative my-4 flex items-center justify-center">
         <svg className="h-44 w-44 -rotate-90 transform" viewBox="0 0 160 160">
+          <defs>
+            <linearGradient id="gaugeGradientEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#10B981" />
+              <stop offset="100%" stopColor="#06B6D4" />
+            </linearGradient>
+            <linearGradient id="gaugeGradientAmber" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#F59E0B" />
+              <stop offset="100%" stopColor="#EF4444" />
+            </linearGradient>
+            <linearGradient id="gaugeGradientRose" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#F43F5E" />
+              <stop offset="100%" stopColor="#9333EA" />
+            </linearGradient>
+            <filter id="gaugeGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor={strokeColor} floodOpacity="0.3" />
+            </filter>
+          </defs>
+
           {/* Background track */}
           <circle
             cx="80"
             cy="80"
             r={radius}
-            stroke="#E2E8F0"
+            stroke="#F1F5F9"
             strokeWidth="12"
             fill="transparent"
-            strokeLinecap="round"
           />
           {/* Active progress track */}
           <circle
             cx="80"
             cy="80"
             r={radius}
-            stroke={strokeColor}
+            stroke={score >= 80 ? "url(#gaugeGradientEmerald)" : score >= 45 ? "url(#gaugeGradientAmber)" : "url(#gaugeGradientRose)"}
             strokeWidth="12"
             fill="transparent"
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
+            filter="url(#gaugeGlow)"
             className="transition-all duration-500 ease-out"
           />
         </svg>
 
         {/* Center score readout */}
         <div className="absolute flex flex-col items-center justify-center text-center">
-          <span className="font-mono text-4xl font-extrabold tracking-tight text-slate-900">
-            {score}
+          <div className="flex items-center gap-1">
+            <span className="font-mono text-4xl font-extrabold tracking-tight text-slate-900">
+              {score}
+            </span>
             <span className="text-xl font-medium text-slate-400">%</span>
-          </span>
+          </div>
           <span
-            className={`mt-1 inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-[11px] font-bold tracking-wide uppercase ${badge.badgeClass}`}
+            className={`mt-1 inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-[11px] font-bold tracking-wide uppercase shadow-xs ${badge.badgeClass}`}
           >
-            {score >= 80 && <ShieldCheck className="h-3 w-3" />}
-            {score >= 45 && score < 80 && <AlertTriangle className="h-3 w-3" />}
-            {score < 45 && <AlertCircle className="h-3 w-3" />}
+            {score >= 80 && <ShieldCheck className="h-3 w-3 text-emerald-600" />}
+            {score >= 45 && score < 80 && <AlertTriangle className="h-3 w-3 text-amber-600" />}
+            {score < 45 && <AlertCircle className="h-3 w-3 text-rose-600" />}
             {badge.label}
           </span>
         </div>

@@ -45,12 +45,12 @@ export async function POST(req: NextRequest) {
     const routingTraces: BifrostTelemetryTrace[] = [];
     let totalSearchSkipSavingsMs = 0;
 
-    // 1. Stage 1: Multi-Model Routing -> gpt-4o-mini claim decomposition
+    // 1. Stage 1: Multi-Model Routing -> groq/openai/gpt-oss-20b claim decomposition
     const extractionResult = await extractClaimsWithBifrost(text);
     routingTraces.push(extractionResult.trace);
     const extractedClaims = extractionResult.claims;
 
-    // 2. Stage 2: Tavily Grounding & Bifrost gpt-4o Freshness Adjudication
+    // 2. Stage 2: Tavily Grounding & Bifrost groq/openai/gpt-oss-120b Freshness Adjudication
     const processedClaims: Array<{
       claimIndex: number;
       originalSpan: string;

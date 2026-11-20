@@ -19,6 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 import { TimeTravelScrubber } from "./TimeTravelScrubber";
+import { DecayCurveChart } from "./DecayCurveChart";
 import { FreshnessGauge } from "./FreshnessGauge";
 import { TelemetryDrawer } from "./TelemetryDrawer";
 import { formatCategoryLabel, formatScoreBadge } from "@/lib/utils";
@@ -110,7 +111,7 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
   const [promptInput, setPromptInput] = useState(
     "How do I use the OpenAI Assistants API retrieval tool in Node.js?"
   );
-  const [selectedModel, setSelectedModel] = useState("openai/gpt-4o-mini");
+  const [selectedModel, setSelectedModel] = useState("groq/openai/gpt-oss-20b");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAutoHealDiff, setShowAutoHealDiff] = useState(false);
   const [copiedFix, setCopiedFix] = useState(false);
@@ -297,6 +298,12 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
         onDateChange={setSimulatedDate}
       />
 
+      {/* Visual Mathematical Half-Life Decay Curves */}
+      <DecayCurveChart
+        claims={dynamicClaims as any}
+        simulatedDate={simulatedDate}
+      />
+
       {/* Input Mode Selector & Forms */}
       <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white/80 shadow-sm backdrop-blur-md">
         {/* Mode Tabs */}
@@ -341,7 +348,7 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
 
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
               <span className="text-[11px] text-slate-500">
-                Pipeline: Bifrost (GPT-4o-mini) → Tavily Live Search → Bifrost (GPT-4o Adjudicator)
+                Pipeline: Bifrost (groq/gpt-oss-20b) → Tavily Live Search → Bifrost (groq/gpt-oss-120b)
               </span>
 
               <button
@@ -382,8 +389,8 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                   onChange={(e) => setSelectedModel(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 bg-white/90 px-3 py-2 font-mono text-xs text-slate-800 focus:border-emerald-500 focus:outline-none"
                 >
-                  <option value="openai/gpt-4o-mini">openai/gpt-4o-mini</option>
-                  <option value="openai/gpt-4o">openai/gpt-4o</option>
+                  <option value="groq/openai/gpt-oss-20b">groq/openai/gpt-oss-20b (Fast Decomposer)</option>
+                  <option value="groq/openai/gpt-oss-120b">groq/openai/gpt-oss-120b (High-Reasoning)</option>
                 </select>
               </div>
             </div>

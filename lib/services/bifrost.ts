@@ -89,7 +89,50 @@ export async function checkBifrostHealth(): Promise<{
 }
 
 /**
- * Stage 1: Bifrost Multi-Model Router -> openai/gpt-4o-mini (Fast & Cost Efficient)
+ * Safely extracts JSON from model text responses without relying on strict response_format
+ */
+export function extractJsonFromText(rawText: string): any {
+  if (!rawText || typeof rawText !== "string") return {};
+
+  const trimmed = rawText.trim();
+
+  // 1. Try direct parse
+  try {
+    return JSON.parse(trimmed);
+  } catch {}
+
+  // 2. Try markdown json block: ```json ... ``` or ``` ... ```
+  const codeBlockMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (codeBlockMatch && codeBlockMatch[1]) {
+    try {
+      return JSON.parse(codeBlockMatch[1].trim());
+    } catch {}
+  }
+
+  // 3. Find outer braces { ... }
+  const firstBrace = trimmed.indexOf("{");
+  const lastBrace = trimmed.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
+    try {
+      return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1));
+    } catch {}
+  }
+
+  // 4. Find outer brackets [ ... ]
+  const firstBracket = trimmed.indexOf("[");
+  const lastBracket = trimmed.lastIndexOf("]");
+  if (firstBracket !== -1 && lastBracket > firstBracket) {
+    try {
+      const arr = JSON.parse(trimmed.slice(firstBracket, lastBracket + 1));
+      return { claims: arr };
+    } catch {}
+  }
+
+  return {};
+}
+
+/**
+ * Stage 1: Bifrost Multi-Model Router -> groq/openai/gpt-oss-20b (Fast & Cost Efficient)
  * Decomposes text into atomic temporal claims and classifies decay profile.
  */
 export async function extractClaimsWithBifrost(text: string): Promise<{
@@ -97,7 +140,7 @@ export async function extractClaimsWithBifrost(text: string): Promise<{
   trace: BifrostTelemetryTrace;
 }> {
   const startTime = Date.now();
-  const model = "openai/gpt-4o-mini";
+  const model = "groq/openai/gpt-oss-20b";
   const client = getBifrostClient();
 
   // If DEMO_FALLBACK_MODE is forced or keys not configured, test live gateway first
@@ -131,13 +174,12 @@ Return pure JSON with an array named "claims". Each element must have:
             content: text,
           },
         ],
-        response_format: { type: "json_object" },
         temperature: 0.1,
       });
 
       const latencyMs = Date.now() - startTime;
       const content = response.choices[0]?.message?.content || "{}";
-      const parsed = JSON.parse(content);
+      const parsed = extractJsonFromText(content);
       const claims: ExtractedClaimRaw[] = Array.isArray(parsed.claims) ? parsed.claims : [];
 
       if (claims.length > 0) {
@@ -177,7 +219,7 @@ Return pure JSON with an array named "claims". Each element must have:
 }
 
 /**
- * Stage 2: Bifrost Multi-Model Router -> openai/gpt-4o (High-Reasoning Adjudicator)
+ * Stage 2: Bifrost Multi-Model Router -> groq/openai/gpt-oss-120b (High-Reasoning Adjudicator)
  * Adjudicates each extracted claim against live Tavily ground-truth search evidence.
  */
 export async function adjudicateClaimWithBifrost(
@@ -188,7 +230,7 @@ export async function adjudicateClaimWithBifrost(
   trace: BifrostTelemetryTrace;
 }> {
   const startTime = Date.now();
-  const model = "openai/gpt-4o";
+  const model = "groq/openai/gpt-oss-120b";
   const client = getBifrostClient();
 
   // If claim is STATIC, instantly mark fresh without complex evaluation
@@ -252,13 +294,12 @@ Live Web Search Evidence from Tavily:
 ${evidenceContext}`,
           },
         ],
-        response_format: { type: "json_object" },
         temperature: 0.1,
       });
 
       const latencyMs = Date.now() - startTime;
       const content = response.choices[0]?.message?.content || "{}";
-      const parsed = JSON.parse(content);
+      const parsed = extractJsonFromText(content);
 
       if (parsed.freshnessScore !== undefined) {
         return {
@@ -308,7 +349,7 @@ ${evidenceContext}`,
  */
 export async function generateTextWithBifrost(
   prompt: string,
-  requestedModel: string = "openai/gpt-4o-mini"
+  requestedModel: string = "groq/openai/gpt-oss-20b"
 ): Promise<{
   text: string;
   trace: BifrostTelemetryTrace;

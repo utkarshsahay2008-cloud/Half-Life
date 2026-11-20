@@ -37,7 +37,7 @@ Cosine similarity is calculated as the dot product of two vectors divided by the
       bifrostRoutingTrace: JSON.stringify([
         {
           stage: "EXTRACTION",
-          model: "openai/gpt-4o-mini",
+          model: "groq/openai/gpt-oss-20b",
           routedVia: "Bifrost Gateway (@maximhq/bifrost)",
           latencyMs: 215,
           tokensUsed: 290,
@@ -45,7 +45,7 @@ Cosine similarity is calculated as the dot product of two vectors divided by the
         },
         {
           stage: "ADJUDICATION",
-          model: "openai/gpt-4o",
+          model: "groq/openai/gpt-oss-120b",
           routedVia: "Bifrost Gateway (@maximhq/bifrost)",
           latencyMs: 460,
           tokensUsed: 620,
@@ -179,7 +179,7 @@ One token is roughly equivalent to 4 characters or 0.75 English words in standar
       bifrostRoutingTrace: JSON.stringify([
         {
           stage: "EXTRACTION",
-          model: "openai/gpt-4o-mini",
+          model: "groq/openai/gpt-oss-20b",
           routedVia: "Bifrost Gateway (@maximhq/bifrost)",
           latencyMs: 198,
           tokensUsed: 260,
@@ -187,7 +187,7 @@ One token is roughly equivalent to 4 characters or 0.75 English words in standar
         },
         {
           stage: "ADJUDICATION",
-          model: "openai/gpt-4o",
+          model: "groq/openai/gpt-oss-120b",
           routedVia: "Bifrost Gateway (@maximhq/bifrost)",
           latencyMs: 430,
           tokensUsed: 590,
@@ -309,7 +309,7 @@ Neural network gradient descent optimizes model weights via backpropagation.`,
       bifrostRoutingTrace: JSON.stringify([
         {
           stage: "EXTRACTION",
-          model: "openai/gpt-4o-mini",
+          model: "groq/openai/gpt-oss-20b",
           routedVia: "Bifrost Gateway (@maximhq/bifrost)",
           latencyMs: 185,
           tokensUsed: 250,
@@ -317,7 +317,7 @@ Neural network gradient descent optimizes model weights via backpropagation.`,
         },
         {
           stage: "ADJUDICATION",
-          model: "openai/gpt-4o",
+          model: "groq/openai/gpt-oss-120b",
           routedVia: "Bifrost Gateway (@maximhq/bifrost)",
           latencyMs: 445,
           tokensUsed: 580,
@@ -448,7 +448,7 @@ Deterministic finite automata recognize regular languages without internal backt
       bifrostRoutingTrace: JSON.stringify([
         {
           stage: "EXTRACTION",
-          model: "openai/gpt-4o-mini",
+          model: "groq/openai/gpt-oss-20b",
           routedVia: "Bifrost Gateway (@maximhq/bifrost)",
           latencyMs: 205,
           tokensUsed: 275,
@@ -456,7 +456,7 @@ Deterministic finite automata recognize regular languages without internal backt
         },
         {
           stage: "ADJUDICATION",
-          model: "openai/gpt-4o",
+          model: "groq/openai/gpt-oss-120b",
           routedVia: "Bifrost Gateway (@maximhq/bifrost)",
           latencyMs: 450,
           tokensUsed: 610,

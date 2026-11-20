@@ -1,0 +1,435 @@
+"use client";
+
+import React, { useMemo, useState } from "react";
+import { TrendingDown, Activity, Sparkles, ShieldCheck, Clock, Info } from "lucide-react";
+
+interface ClaimItem {
+  id?: string;
+  claimIndex: number;
+  originalSpan: string;
+  category: string;
+  halfLifeDays: number;
+  expiredAtDate: string;
+  freshnessScore: number;
+  status: string;
+  liveTruth?: string;
+}
+
+interface DecayCurveChartProps {
+  claims: ClaimItem[];
+  simulatedDate: string; // YYYY-MM-DD
+}
+
+const CATEGORY_COLORS: Record<string, { stroke: string; fill: string; bg: string; text: string; badge: string; name: string }> = {
+  API: {
+    stroke: "#3B82F6", // blue-500
+    fill: "rgba(59, 130, 246, 0.12)",
+    bg: "bg-blue-500",
+    text: "text-blue-700",
+    badge: "border-blue-200 bg-blue-50 text-blue-700",
+    name: "API & SDK Endpoints (~90d)",
+  },
+  PRICING: {
+    stroke: "#F59E0B", // amber-500
+    fill: "rgba(245, 158, 11, 0.12)",
+    bg: "bg-amber-500",
+    text: "text-amber-700",
+    badge: "border-amber-200 bg-amber-50 text-amber-700",
+    name: "Pricing Rate Cards (~60d)",
+  },
+  LEADERSHIP: {
+    stroke: "#8B5CF6", // purple-500
+    fill: "rgba(139, 92, 246, 0.12)",
+    bg: "bg-purple-500",
+    text: "text-purple-700",
+    badge: "border-purple-200 bg-purple-50 text-purple-700",
+    name: "Corporate Leadership (~180d)",
+  },
+  REGULATION: {
+    stroke: "#EC4899", // pink-500
+    fill: "rgba(236, 72, 153, 0.12)",
+    bg: "bg-pink-500",
+    text: "text-pink-700",
+    badge: "border-pink-200 bg-pink-50 text-pink-700",
+    name: "AI Safety & Regulations (~240d)",
+  },
+  STATIC: {
+    stroke: "#10B981", // emerald-500
+    fill: "rgba(16, 185, 129, 0.12)",
+    bg: "bg-emerald-500",
+    text: "text-emerald-700",
+    badge: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    name: "Timeless Invariants (Static)",
+  },
+};
+
+const DEFAULT_CATEGORY_STYLE = {
+  stroke: "#64748B",
+  fill: "rgba(100, 116, 139, 0.1)",
+  bg: "bg-slate-500",
+  text: "text-slate-700",
+  badge: "border-slate-200 bg-slate-50 text-slate-700",
+  name: "General Claim",
+};
+
+export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps) {
+  const [hoveredPoint, setHoveredPoint] = useState<{
+    category: string;
+    date: string;
+    score: number;
+    x: number;
+    y: number;
+  } | null>(null);
+
+  // Time boundaries: 2023-06-01 to 2026-12-01 (approx 42 months)
+  const START_EPOCH = new Date("2023-06-01").getTime();
+  const END_EPOCH = new Date("2026-12-01").getTime();
+  const TOTAL_DURATION_DAYS = (END_EPOCH - START_EPOCH) / (1000 * 60 * 60 * 24);
+
+  // Current simulation marker position
+  const simEpoch = new Date(simulatedDate).getTime() || END_EPOCH;
+  const simRatio = Math.max(0, Math.min(1, (simEpoch - START_EPOCH) / (END_EPOCH - START_EPOCH)));
+
+  // SVG dimensions
+  const SVG_WIDTH = 760;
+  const SVG_HEIGHT = 220;
+  const PADDING = { top: 20, right: 30, bottom: 35, left: 45 };
+  const CHART_WIDTH = SVG_WIDTH - PADDING.left - PADDING.right;
+  const CHART_HEIGHT = SVG_HEIGHT - PADDING.top - PADDING.bottom;
+
+  // Distinct categories present in active claims
+  const categoriesPresent = useMemo(() => {
+    const map = new Map<string, { halfLifeDays: number; count: number; minExpiry: string }>();
+    claims.forEach((c) => {
+      const cat = c.category.toUpperCase();
+      const existing = map.get(cat);
+      if (existing) {
+        existing.count += 1;
+        if (c.expiredAtDate !== "NEVER" && (existing.minExpiry === "NEVER" || c.expiredAtDate < existing.minExpiry)) {
+          existing.minExpiry = c.expiredAtDate;
+        }
+      } else {
+        map.set(cat, {
+          halfLifeDays: c.halfLifeDays,
+          count: 1,
+          minExpiry: c.expiredAtDate,
+        });
+      }
+    });
+    return Array.from(map.entries()).map(([cat, data]) => ({
+      category: cat,
+      halfLifeDays: data.halfLifeDays,
+      count: data.count,
+      minExpiry: data.minExpiry,
+      style: CATEGORY_COLORS[cat] || DEFAULT_CATEGORY_STYLE,
+    }));
+  }, [claims]);
+
+  // Generate decay points for a category over time
+  // Formula: Freshness = 100 if t <= expiry; else 100 * (0.5)^((t - expiry) / halfLife)
+  const generateCurvePath = (halfLifeDays: number, minExpiry: string) => {
+    const steps = 60;
+    const points: Array<{ x: number; y: number; date: string; score: number }> = [];
+
+    const isStatic = halfLifeDays <= 0 || minExpiry === "NEVER";
+    const expiryEpoch = minExpiry === "NEVER" ? END_EPOCH : new Date(minExpiry).getTime();
+
+    for (let i = 0; i <= steps; i++) {
+      const stepEpoch = START_EPOCH + (i / steps) * (END_EPOCH - START_EPOCH);
+      const x = PADDING.left + (i / steps) * CHART_WIDTH;
+
+      let score = 100;
+      if (!isStatic && stepEpoch > expiryEpoch) {
+        const daysPastExpiry = (stepEpoch - expiryEpoch) / (1000 * 60 * 60 * 24);
+        score = Math.max(5, Math.round(100 * Math.pow(0.5, daysPastExpiry / halfLifeDays)));
+      }
+
+      // Convert score (0 - 100) to SVG Y (100 is at top, 0 at bottom)
+      const y = PADDING.top + CHART_HEIGHT - (score / 100) * CHART_HEIGHT;
+      const dateStr = new Date(stepEpoch).toISOString().split("T")[0];
+
+      points.push({ x, y, date: dateStr, score });
+    }
+
+    // Build SVG path
+    const pathD = points.reduce((acc, pt, idx) => {
+      return idx === 0 ? `M ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}` : `${acc} L ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`;
+    }, "");
+
+    const areaD = `${pathD} L ${(PADDING.left + CHART_WIDTH).toFixed(1)} ${(PADDING.top + CHART_HEIGHT).toFixed(1)} L ${PADDING.left.toFixed(1)} ${(PADDING.top + CHART_HEIGHT).toFixed(1)} Z`;
+
+    return { pathD, areaD, points };
+  };
+
+  // Timeline year milestones
+  const yearTicks = [
+    { label: "Jun 2023", date: "2023-06-01", epoch: new Date("2023-06-01").getTime() },
+    { label: "Jan 2024", date: "2024-01-01", epoch: new Date("2024-01-01").getTime() },
+    { label: "Jul 2024", date: "2024-07-01", epoch: new Date("2024-07-01").getTime() },
+    { label: "Jan 2025", date: "2025-01-01", epoch: new Date("2025-01-01").getTime() },
+    { label: "Jul 2025", date: "2025-07-01", epoch: new Date("2025-07-01").getTime() },
+    { label: "Jan 2026", date: "2026-01-01", epoch: new Date("2026-01-01").getTime() },
+    { label: "Nov 2026", date: "2026-11-20", epoch: new Date("2026-11-20").getTime() },
+  ];
+
+  const simMarkerX = PADDING.left + simRatio * CHART_WIDTH;
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/90 p-5 shadow-sm backdrop-blur-md">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200">
+            <TrendingDown className="h-4 w-4" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                Mathematical Temporal Decay Dynamics
+              </h3>
+              <span className="font-mono text-[10px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200/70 rounded-full px-2 py-0.5">
+                N(t) = N₀ · (½)^(t/t½)
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              Simulated half-life decay trajectories for active claims across chronological eras.
+            </p>
+          </div>
+        </div>
+
+        {/* Dynamic Status at current simulation date */}
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <span className="text-slate-500">Chronometer Needle:</span>
+          <span className="rounded-md bg-slate-900 px-2 py-1 font-bold text-white shadow-xs">
+            {simulatedDate}
+          </span>
+        </div>
+      </div>
+
+      {/* SVG Decay Chart */}
+      <div className="relative mt-3 w-full overflow-x-auto">
+        <svg
+          viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+          className="w-full h-auto select-none overflow-visible"
+        >
+          <defs>
+            {/* Gradients for each category */}
+            {categoriesPresent.map(({ category, style }) => (
+              <linearGradient
+                key={category}
+                id={`grad-${category}`}
+                x1="0%"
+                y1="0%"
+                x2="0%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor={style.stroke} stopOpacity="0.22" />
+                <stop offset="100%" stopColor={style.stroke} stopOpacity="0.01" />
+              </linearGradient>
+            ))}
+
+            {/* Needle glow filter */}
+            <filter id="needleGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="#4F46E5" floodOpacity="0.4" />
+            </filter>
+          </defs>
+
+          {/* Grid lines & score ticks (Y-axis: 0%, 25%, 50%, 75%, 100%) */}
+          {[0, 25, 50, 75, 100].map((score) => {
+            const y = PADDING.top + CHART_HEIGHT - (score / 100) * CHART_HEIGHT;
+            return (
+              <g key={score}>
+                <line
+                  x1={PADDING.left}
+                  y1={y}
+                  x2={PADDING.left + CHART_WIDTH}
+                  y2={y}
+                  stroke="#E2E8F0"
+                  strokeWidth="1"
+                  strokeDasharray={score === 0 || score === 100 ? "" : "3 3"}
+                />
+                <text
+                  x={PADDING.left - 8}
+                  y={y + 3}
+                  textAnchor="end"
+                  className="fill-slate-400 font-mono text-[9px] font-medium"
+                >
+                  {score}%
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Critical Staleness Threshold (45%) */}
+          <line
+            x1={PADDING.left}
+            y1={PADDING.top + CHART_HEIGHT - 0.45 * CHART_HEIGHT}
+            x2={PADDING.left + CHART_WIDTH}
+            y2={PADDING.top + CHART_HEIGHT - 0.45 * CHART_HEIGHT}
+            stroke="#F43F5E"
+            strokeWidth="1.2"
+            strokeDasharray="4 4"
+            opacity="0.65"
+          />
+          <text
+            x={PADDING.left + CHART_WIDTH - 4}
+            y={PADDING.top + CHART_HEIGHT - 0.45 * CHART_HEIGHT - 4}
+            textAnchor="end"
+            className="fill-rose-500 font-mono text-[9px] font-bold"
+          >
+            Critical Stale Boundary (45%)
+          </text>
+
+          {/* X-axis date milestones */}
+          {yearTicks.map((tick) => {
+            const x = PADDING.left + ((tick.epoch - START_EPOCH) / (END_EPOCH - START_EPOCH)) * CHART_WIDTH;
+            return (
+              <g key={tick.date}>
+                <line
+                  x1={x}
+                  y1={PADDING.top}
+                  x2={x}
+                  y2={PADDING.top + CHART_HEIGHT}
+                  stroke="#F1F5F9"
+                  strokeWidth="1"
+                />
+                <line
+                  x1={x}
+                  y1={PADDING.top + CHART_HEIGHT}
+                  x2={x}
+                  y2={PADDING.top + CHART_HEIGHT + 4}
+                  stroke="#CBD5E1"
+                  strokeWidth="1"
+                />
+                <text
+                  x={x}
+                  y={PADDING.top + CHART_HEIGHT + 16}
+                  textAnchor="middle"
+                  className="fill-slate-500 font-mono text-[9px] font-medium"
+                >
+                  {tick.label}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Category Decay Curves */}
+          {categoriesPresent.map(({ category, halfLifeDays, minExpiry, style }) => {
+            const { pathD, areaD, points } = generateCurvePath(halfLifeDays, minExpiry);
+
+            return (
+              <g key={category}>
+                {/* Area under curve */}
+                <path d={areaD} fill={`url(#grad-${category})`} />
+
+                {/* Primary decay curve */}
+                <path
+                  d={pathD}
+                  fill="none"
+                  stroke={style.stroke}
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+
+                {/* Interactive sample points */}
+                {points
+                  .filter((_, idx) => idx % 6 === 0)
+                  .map((pt, pIdx) => (
+                    <circle
+                      key={pIdx}
+                      cx={pt.x}
+                      cy={pt.y}
+                      r="3.5"
+                      fill="#FFFFFF"
+                      stroke={style.stroke}
+                      strokeWidth="2"
+                      className="cursor-pointer transition-transform hover:scale-150"
+                      onMouseEnter={() =>
+                        setHoveredPoint({
+                          category,
+                          date: pt.date,
+                          score: pt.score,
+                          x: pt.x,
+                          y: pt.y,
+                        })
+                      }
+                      onMouseLeave={() => setHoveredPoint(null)}
+                    />
+                  ))}
+              </g>
+            );
+          })}
+
+          {/* Active Chronometer Needle */}
+          <g filter="url(#needleGlow)">
+            <line
+              x1={simMarkerX}
+              y1={PADDING.top - 6}
+              x2={simMarkerX}
+              y2={PADDING.top + CHART_HEIGHT + 6}
+              stroke="#4F46E5"
+              strokeWidth="2.5"
+              strokeDasharray="4 2"
+            />
+            {/* Top pointer marker */}
+            <circle cx={simMarkerX} cy={PADDING.top - 6} r="4.5" fill="#4F46E5" />
+            <circle cx={simMarkerX} cy={PADDING.top - 6} r="2" fill="#FFFFFF" />
+
+            {/* Bottom pointer marker */}
+            <circle cx={simMarkerX} cy={PADDING.top + CHART_HEIGHT + 6} r="4.5" fill="#4F46E5" />
+          </g>
+
+          {/* Hover Tooltip Popup within SVG */}
+          {hoveredPoint && (
+            <g transform={`translate(${Math.min(hoveredPoint.x + 10, SVG_WIDTH - 140)}, ${Math.max(hoveredPoint.y - 45, 10)})`}>
+              <rect
+                width="130"
+                height="42"
+                rx="6"
+                fill="#0F172A"
+                className="shadow-lg"
+              />
+              <text x="8" y="16" fill="#F8FAFC" className="font-mono text-[9px] font-bold">
+                {hoveredPoint.category}: {hoveredPoint.score}% Fresh
+              </text>
+              <text x="8" y="30" fill="#94A3B8" className="font-mono text-[8px]">
+                Date: {hoveredPoint.date}
+              </text>
+            </g>
+          )}
+        </svg>
+      </div>
+
+      {/* Category Pills & Decay Stats Legend */}
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 border-t border-slate-100 pt-3">
+        {categoriesPresent.map(({ category, halfLifeDays, count, style }) => {
+          return (
+            <div
+              key={category}
+              className="flex items-center gap-2 rounded-xl border border-slate-200/70 bg-slate-50/70 px-2.5 py-1.5 transition-all hover:bg-white hover:shadow-xs"
+            >
+              <div
+                className="h-2.5 w-2.5 rounded-full shrink-0 shadow-xs"
+                style={{ backgroundColor: style.stroke }}
+              />
+              <div className="overflow-hidden">
+                <div className="flex items-center gap-1">
+                  <span className="font-mono text-[10px] font-bold text-slate-800 truncate">
+                    {category}
+                  </span>
+                  <span className="rounded bg-white px-1 font-mono text-[9px] text-slate-500 border border-slate-200">
+                    {count}
+                  </span>
+                </div>
+                <span className="block font-mono text-[9px] text-slate-500 truncate">
+                  {halfLifeDays > 0 ? `t½ = ${halfLifeDays}d` : "Static / ∞"}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
