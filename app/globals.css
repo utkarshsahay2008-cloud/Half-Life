@@ -36,7 +36,7 @@ body {
   background-size: 24px 24px;
 }
 
-/* Soft, Elegant Pastel Ambient Orbs */
+/* Soft, Elegant Pastel Ambient Orbs with GPU Hardware Acceleration */
 .ambient-orb-1 {
   position: absolute;
   top: -8%;
@@ -45,8 +45,10 @@ body {
   height: 600px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(56, 189, 248, 0.04) 50%, transparent 70%);
-  filter: blur(80px);
-  animation: floatOrb 22s ease-in-out infinite alternate;
+  filter: blur(60px);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  animation: floatOrb 26s ease-in-out infinite alternate;
 }
 
 .ambient-orb-2 {
@@ -57,8 +59,10 @@ body {
   height: 700px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.04) 50%, transparent 70%);
-  filter: blur(90px);
-  animation: floatOrb 28s ease-in-out infinite alternate-reverse;
+  filter: blur(70px);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  animation: floatOrb 32s ease-in-out infinite alternate-reverse;
 }
 
 .ambient-orb-3 {
@@ -69,8 +73,10 @@ body {
   height: 550px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(244, 63, 94, 0.06) 0%, rgba(251, 146, 60, 0.04) 50%, transparent 70%);
-  filter: blur(85px);
-  animation: floatOrb 25s ease-in-out infinite alternate;
+  filter: blur(65px);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  animation: floatOrb 28s ease-in-out infinite alternate;
 }
 
 .ambient-orb-4 {
@@ -81,42 +87,44 @@ body {
   height: 500px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(20, 184, 166, 0.05) 0%, rgba(99, 102, 241, 0.03) 50%, transparent 70%);
-  filter: blur(95px);
+  filter: blur(75px);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 @keyframes floatOrb {
   0% {
-    transform: translate(0px, 0px) scale(1);
+    transform: translate3d(0px, 0px, 0) scale(1);
   }
   50% {
-    transform: translate(25px, -20px) scale(1.04);
+    transform: translate3d(25px, -20px, 0) scale(1.03);
   }
   100% {
-    transform: translate(-20px, 20px) scale(0.98);
+    transform: translate3d(-20px, 20px, 0) scale(0.98);
   }
 }
 
 /* Glassmorphism Surface Primitives */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(226, 232, 240, 0.85);
-  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.025), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  background: rgba(255, 255, 255, 0.96);
-  border-color: rgba(203, 213, 225, 0.9);
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(203, 213, 225, 0.95);
   box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(255, 255, 255, 1) inset;
   transform: translateY(-2px);
 }

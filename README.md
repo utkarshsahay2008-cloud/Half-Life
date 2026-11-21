@@ -52,11 +52,18 @@ flowchart TD
 
 ## ✨ Signature Features
 
-- **Luminous Light Glassmorphism:** Crisp Alabaster (`#F8FAFC`) with atmospheric pastel ambient light washes, frosted glass refraction panels (`backdrop-blur-xl`), and bespoke geometric card SVGs (Sonar rings, Circuit splines, Ruler ticks).
-- **Time-Travel Decay Scrubber:** Drag the chronometer forward in time (`2023` → `2024` → `2025` → `NOV 2026`) to watch highlighted claim spans dynamically change from Emerald (Fresh) to Amber (Decaying) to Coral-Rose (Stale) as expiration timestamps are crossed.
-- **Auto-Heal Diff Engine:** One-click toggle that strikes through stale code or assertions and inserts Tavily-verified replacements, complete with a "Copy Patched Output" button.
+- **Luminous Light Glassmorphism & Category Chromatic Palette:** Crisp Alabaster (`#F8FAFC`) with GPU-accelerated ambient pastel light washes (`translate3d`), frosted glass refraction panels, and category-tailored luminous accents (Cobalt for APIs, Radiant Amber for Pricing, Amethyst for Leadership, Rose-Quartz for Regulation, and Mint Jade for Timeless Invariants).
+- **Butter-Smooth 60fps Chronometer:** Drag the chronometer forward (`2023` → `2024` → `2025` → `NOV 2026`) with `requestAnimationFrame`-throttled updates and zero-overhead SVG vector rendering without layout stutter or hang.
+- **Interactive Visual Diagram Studio (4 Unique Perspectives):**
+  1. *Mathematical Factual Decay Trajectories:* Logarithmic decay curve plotting $N(t) = N_0 \cdot (1/2)^{t / t_{1/2}}$ across distinct categories with vector isolation chips.
+  2. *Multi-Axis Knowledge Entropy Radar:* 5-axis SVG spider chart dynamically morphing as the Chronometer moves through time.
+  3. *Decay Parameter Sandbox:* Live interactive formula simulator allowing users to drag Half-Life ($t_{1/2}$), Confidence ($N_0$), and Time ($t$) to calculate decay constant ($\lambda$) and recommended grounding cadence.
+  4. *Bifrost & Tavily Routing Architecture Flow:* 5-stage interactive execution topology with clickable node inspectors showing model latency, prompt schemas, and token usage.
+- **Real-Time Claims Filtering & Forensic Search:** Filter atomic claims instantly by keyword, category (`API`, `PRICING`, `LEADERSHIP`, `REGULATION`, `STATIC`), or freshness status (`Fresh`, `Decaying`, `Stale`).
+- **Forensic Compliance Report Export:** One-click JSON compliance export with complete provenance, Bifrost telemetry trace, and Tavily search URLs.
+- **Auto-Heal Diff Engine:** One-click toggle that strikes through stale code and inserts Tavily-verified replacements, complete with a "Copy Patched Output" button.
 - **Parallel & Intercepting Routes (`@modal`):** Every claim has a unique, shareable URL (`/audit/[auditId]/claim/[claimId]`). Clicking opens an intercepting frosted glass modal; direct navigation or hard refresh renders the standalone full-page forensic report.
-- **Resilient Dual-Mode Execution:** Full live support for Bifrost Gateway (`http://localhost:8080/openai`) and Tavily (`https://api.tavily.com/search`), with automatic fallback simulation and 4 pre-seeded SQLite specimens for instant zero-downtime evaluation.
+- **Zero-Latency In-Memory Specimen Cache:** Instant 0ms switching across all 4 realistic pre-seeded specimens without cold-start delay.
 
 ---
 

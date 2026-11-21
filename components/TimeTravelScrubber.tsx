@@ -34,18 +34,25 @@ export function TimeTravelScrubber({
   onDateChange,
 }: TimeTravelScrubberProps) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const rafRef = React.useRef<number | null>(null);
 
   // Convert current date string to slider percentage (0 to 100)
   const currentEpoch = new Date(currentSimulatedDate).getTime() || MAX_EPOCH;
+  const currentEpochRef = React.useRef(currentEpoch);
+  currentEpochRef.current = currentEpoch;
+
   const sliderPercent = Math.min(
     100,
     Math.max(0, ((currentEpoch - MIN_EPOCH) / (MAX_EPOCH - MIN_EPOCH)) * 100)
   );
 
   const handleSliderInput = (val: number) => {
-    const epoch = MIN_EPOCH + (val / 100) * (MAX_EPOCH - MIN_EPOCH);
-    const dateStr = new Date(epoch).toISOString().split("T")[0];
-    onDateChange(dateStr);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      const epoch = MIN_EPOCH + (val / 100) * (MAX_EPOCH - MIN_EPOCH);
+      const dateStr = new Date(epoch).toISOString().split("T")[0];
+      onDateChange(dateStr);
+    });
   };
 
   const handleMilestoneClick = (dateStr: string) => {
@@ -53,22 +60,31 @@ export function TimeTravelScrubber({
     onDateChange(dateStr);
   };
 
-  // Playback timer to animate time forward
+  // Continuous buttery smooth playback timer
   useEffect(() => {
     if (!isPlaying) return;
 
     const interval = setInterval(() => {
-      const nextEpoch = currentEpoch + (MAX_EPOCH - MIN_EPOCH) * 0.025;
+      const cur = currentEpochRef.current;
+      const nextEpoch = cur + (MAX_EPOCH - MIN_EPOCH) * 0.02;
       if (nextEpoch >= MAX_EPOCH) {
         onDateChange(TIME_MILESTONES[TIME_MILESTONES.length - 1].date);
         setIsPlaying(false);
       } else {
-        onDateChange(new Date(nextEpoch).toISOString().split("T")[0]);
+        const nextDateStr = new Date(nextEpoch).toISOString().split("T")[0];
+        onDateChange(nextDateStr);
       }
-    }, 200);
+    }, 120);
 
     return () => clearInterval(interval);
-  }, [isPlaying, currentEpoch, onDateChange]);
+  }, [isPlaying, onDateChange]);
+
+  // Clean up RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   const isCurrentToday = currentSimulatedDate === "2026-11-20";
 

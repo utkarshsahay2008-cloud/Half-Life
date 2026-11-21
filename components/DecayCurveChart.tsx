@@ -102,8 +102,10 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
   const CHART_WIDTH = SVG_WIDTH - PADDING.left - PADDING.right;
   const CHART_HEIGHT = SVG_HEIGHT - PADDING.top - PADDING.bottom;
 
-  // Distinct categories present in active claims
-  const categoriesPresent = useMemo(() => {
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>("ALL");
+
+  // Distinct categories present in active claims, with memoized curve path calculation
+  const computedCurves = useMemo(() => {
     const map = new Map<string, { halfLifeDays: number; count: number; minExpiry: string }>();
     claims.forEach((c) => {
       const cat = c.category.toUpperCase();
@@ -121,50 +123,48 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
         });
       }
     });
-    return Array.from(map.entries()).map(([cat, data]) => ({
-      category: cat,
-      halfLifeDays: data.halfLifeDays,
-      count: data.count,
-      minExpiry: data.minExpiry,
-      style: CATEGORY_COLORS[cat] || DEFAULT_CATEGORY_STYLE,
-    }));
-  }, [claims]);
 
-  // Generate decay points for a category over time
-  // Formula: Freshness = 100 if t <= expiry; else 100 * (0.5)^((t - expiry) / halfLife)
-  const generateCurvePath = (halfLifeDays: number, minExpiry: string) => {
     const steps = 60;
-    const points: Array<{ x: number; y: number; date: string; score: number }> = [];
+    return Array.from(map.entries()).map(([cat, data]) => {
+      const style = CATEGORY_COLORS[cat] || DEFAULT_CATEGORY_STYLE;
+      const isStatic = data.halfLifeDays <= 0 || data.minExpiry === "NEVER";
+      const expiryEpoch = data.minExpiry === "NEVER" ? END_EPOCH : new Date(data.minExpiry).getTime();
 
-    const isStatic = halfLifeDays <= 0 || minExpiry === "NEVER";
-    const expiryEpoch = minExpiry === "NEVER" ? END_EPOCH : new Date(minExpiry).getTime();
+      const points: Array<{ x: number; y: number; date: string; score: number }> = [];
 
-    for (let i = 0; i <= steps; i++) {
-      const stepEpoch = START_EPOCH + (i / steps) * (END_EPOCH - START_EPOCH);
-      const x = PADDING.left + (i / steps) * CHART_WIDTH;
+      for (let i = 0; i <= steps; i++) {
+        const stepEpoch = START_EPOCH + (i / steps) * (END_EPOCH - START_EPOCH);
+        const x = PADDING.left + (i / steps) * CHART_WIDTH;
 
-      let score = 100;
-      if (!isStatic && stepEpoch > expiryEpoch) {
-        const daysPastExpiry = (stepEpoch - expiryEpoch) / (1000 * 60 * 60 * 24);
-        score = Math.max(5, Math.round(100 * Math.pow(0.5, daysPastExpiry / halfLifeDays)));
+        let score = 100;
+        if (!isStatic && stepEpoch > expiryEpoch) {
+          const daysPastExpiry = (stepEpoch - expiryEpoch) / (1000 * 60 * 60 * 24);
+          score = Math.max(5, Math.round(100 * Math.pow(0.5, daysPastExpiry / data.halfLifeDays)));
+        }
+
+        const y = PADDING.top + CHART_HEIGHT - (score / 100) * CHART_HEIGHT;
+        const dateStr = new Date(stepEpoch).toISOString().split("T")[0];
+        points.push({ x, y, date: dateStr, score });
       }
 
-      // Convert score (0 - 100) to SVG Y (100 is at top, 0 at bottom)
-      const y = PADDING.top + CHART_HEIGHT - (score / 100) * CHART_HEIGHT;
-      const dateStr = new Date(stepEpoch).toISOString().split("T")[0];
+      const pathD = points.reduce((acc, pt, idx) => {
+        return idx === 0 ? `M ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}` : `${acc} L ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`;
+      }, "");
 
-      points.push({ x, y, date: dateStr, score });
-    }
+      const areaD = `${pathD} L ${(PADDING.left + CHART_WIDTH).toFixed(1)} ${(PADDING.top + CHART_HEIGHT).toFixed(1)} L ${PADDING.left.toFixed(1)} ${(PADDING.top + CHART_HEIGHT).toFixed(1)} Z`;
 
-    // Build SVG path
-    const pathD = points.reduce((acc, pt, idx) => {
-      return idx === 0 ? `M ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}` : `${acc} L ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`;
-    }, "");
-
-    const areaD = `${pathD} L ${(PADDING.left + CHART_WIDTH).toFixed(1)} ${(PADDING.top + CHART_HEIGHT).toFixed(1)} L ${PADDING.left.toFixed(1)} ${(PADDING.top + CHART_HEIGHT).toFixed(1)} Z`;
-
-    return { pathD, areaD, points };
-  };
+      return {
+        category: cat,
+        halfLifeDays: data.halfLifeDays,
+        count: data.count,
+        minExpiry: data.minExpiry,
+        style,
+        pathD,
+        areaD,
+        points,
+      };
+    });
+  }, [claims]);
 
   // Timeline year milestones
   const yearTicks = [
@@ -197,7 +197,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
               </span>
             </div>
             <p className="text-[11px] text-slate-500">
-              Calculates logarithmic entropy decay across API versions, pricing rate cards, leadership, and regulatory lifecycles.
+              Logarithmic half-life decay trajectories across APIs, rate cards, governance, and regulatory lifecycles.
             </p>
           </div>
         </div>
@@ -211,15 +211,47 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
         </div>
       </div>
 
+      {/* Category Trajectory Isolation Pills */}
+      <div className="flex flex-wrap items-center gap-1.5 pt-2 pb-1">
+        <button
+          onClick={() => setActiveCategoryFilter("ALL")}
+          className={`px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold transition ${
+            activeCategoryFilter === "ALL"
+              ? "bg-slate-900 text-white shadow-xs"
+              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+          }`}
+        >
+          All Vectors ({computedCurves.length})
+        </button>
+        {computedCurves.map((c) => {
+          const isSelected = activeCategoryFilter === c.category;
+          return (
+            <button
+              key={c.category}
+              onClick={() => setActiveCategoryFilter(isSelected ? "ALL" : c.category)}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold border transition ${
+                isSelected
+                  ? `${c.style.badge} ring-2 ring-indigo-400/30 shadow-xs font-extrabold`
+                  : "border-slate-200/80 bg-white text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${c.style.bg}`} />
+              <span>{c.category}</span>
+              <span className="text-[9px] opacity-70">({c.halfLifeDays >= 99999 ? "∞" : `${c.halfLifeDays}d`})</span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* SVG Decay Chart */}
-      <div className="relative mt-3 w-full overflow-x-auto">
+      <div className="relative mt-2 w-full overflow-x-auto">
         <svg
           viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
           className="w-full h-auto select-none overflow-visible"
         >
           <defs>
             {/* Gradients for each category */}
-            {categoriesPresent.map(({ category, style }) => (
+            {computedCurves.map(({ category, style }) => (
               <linearGradient
                 key={category}
                 id={`grad-${category}`}
@@ -233,11 +265,6 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                 <stop offset="100%" stopColor={style.stroke} stopOpacity="0.01" />
               </linearGradient>
             ))}
-
-            {/* Needle glow filter */}
-            <filter id="needleGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#4F46E5" floodOpacity="0.4" />
-            </filter>
           </defs>
 
           {/* Grid lines & score ticks (Y-axis: 0%, 25%, 50%, 75%, 100%) */}
@@ -320,11 +347,12 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
           })}
 
           {/* Category Decay Curves */}
-          {categoriesPresent.map(({ category, halfLifeDays, minExpiry, style }) => {
-            const { pathD, areaD, points } = generateCurvePath(halfLifeDays, minExpiry);
+          {computedCurves.map(({ category, style, pathD, areaD, points }) => {
+            const isFaded = activeCategoryFilter !== "ALL" && activeCategoryFilter !== category;
+            const opacity = isFaded ? 0.15 : 1.0;
 
             return (
-              <g key={category}>
+              <g key={category} style={{ opacity, transition: "opacity 0.2s ease" }}>
                 {/* Area under curve */}
                 <path d={areaD} fill={`url(#grad-${category})`} />
 
@@ -333,7 +361,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                   d={pathD}
                   fill="none"
                   stroke={style.stroke}
-                  strokeWidth="2.75"
+                  strokeWidth={activeCategoryFilter === category ? "3.5" : "2.5"}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
@@ -367,8 +395,19 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
             );
           })}
 
-          {/* Active Chronometer Needle */}
-          <g filter="url(#needleGlow)">
+          {/* Active Chronometer Needle - Zero-overhead crisp rendering */}
+          <g>
+            {/* Soft backdrop beam */}
+            <line
+              x1={simMarkerX}
+              y1={PADDING.top}
+              x2={simMarkerX}
+              y2={PADDING.top + CHART_HEIGHT}
+              stroke="#6366F1"
+              strokeWidth="6"
+              strokeOpacity="0.15"
+            />
+            {/* Sharp needle line */}
             <line
               x1={simMarkerX}
               y1={PADDING.top - 6}
@@ -379,11 +418,11 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
               strokeDasharray="4 2"
             />
             {/* Top pointer marker */}
-            <circle cx={simMarkerX} cy={PADDING.top - 6} r="5" fill="#4F46E5" />
-            <circle cx={simMarkerX} cy={PADDING.top - 6} r="2.5" fill="#FFFFFF" />
+            <circle cx={simMarkerX} cy={PADDING.top - 6} r="4.5" fill="#4F46E5" />
+            <circle cx={simMarkerX} cy={PADDING.top - 6} r="2" fill="#FFFFFF" />
 
             {/* Bottom pointer marker */}
-            <circle cx={simMarkerX} cy={PADDING.top + CHART_HEIGHT + 6} r="5" fill="#4F46E5" />
+            <circle cx={simMarkerX} cy={PADDING.top + CHART_HEIGHT + 6} r="4.5" fill="#4F46E5" />
           </g>
 
           {/* Hover Tooltip Popup within SVG */}
@@ -409,7 +448,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
 
       {/* Category Pills & Decay Velocity Cards */}
       <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 border-t border-slate-100 pt-3.5">
-        {categoriesPresent.map(({ category, halfLifeDays, count, style }) => {
+        {computedCurves.map(({ category, halfLifeDays, count, style }) => {
           return (
             <div
               key={category}

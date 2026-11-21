@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -20,12 +20,25 @@ import {
   TrendingDown,
   ExternalLink,
   Code2,
+  Compass,
+  Calculator,
+  Download,
+  Filter,
+  CheckCircle2,
+  AlertTriangle,
+  AlertCircle,
+  Eye,
+  SlidersHorizontal,
 } from "lucide-react";
 import { TimeTravelScrubber } from "./TimeTravelScrubber";
 import { DecayCurveChart } from "./DecayCurveChart";
+import { KnowledgeEntropyRadar } from "./KnowledgeEntropyRadar";
+import { DecaySimulatorSandbox } from "./DecaySimulatorSandbox";
+import { PipelineArchitectureFlow } from "./PipelineArchitectureFlow";
 import { FreshnessGauge } from "./FreshnessGauge";
 import { TelemetryDrawer } from "./TelemetryDrawer";
 import { formatCategoryLabel, formatScoreBadge } from "@/lib/utils";
+import { SPECIMEN_METADATA, CACHED_SPECIMENS } from "@/lib/specimens";
 
 export interface AuditReportData {
   id: string;
@@ -66,45 +79,13 @@ interface InteractiveAuditWorkspaceProps {
   initialAudit: AuditReportData;
 }
 
-const SPECIMENS = [
-  {
-    slug: "spec-api-drift",
-    label: "Assistants API v1 Deprecation",
-    category: "API",
-    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
-    dotColor: "bg-blue-500",
-    description: "openai.beta.threads.runs.create with retrieval tool vs createAndPoll with file_search",
-  },
-  {
-    slug: "spec-pricing-rot",
-    label: "GPT-4 Token Rate Cards",
-    category: "PRICING",
-    badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
-    dotColor: "bg-amber-500",
-    description: "Legacy GPT-4 rate cards vs GPT-4o and Claude prompt caching discounts",
-  },
-  {
-    slug: "spec-leadership-shift",
-    label: "OpenAI Executive Governance",
-    category: "LEADERSHIP",
-    badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
-    dotColor: "bg-purple-500",
-    description: "CTO and Chief Scientist leadership transitions through late 2024",
-  },
-  {
-    slug: "spec-timeless-physics",
-    label: "Thermodynamics & Timeless Laws",
-    category: "STATIC",
-    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    dotColor: "bg-emerald-500",
-    description: "Timeless physical constants optimized via Tavily Search-Skip (zero decay)",
-  },
-];
+type DiagramTab = "CURVES" | "RADAR" | "SANDBOX" | "FLOW";
 
 export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWorkspaceProps) {
   const router = useRouter();
   const [currentAudit, setCurrentAudit] = useState<AuditReportData>(initialAudit);
   const [activeTab, setActiveTab] = useState<"AUDIT" | "GENERATE">("AUDIT");
+  const [activeDiagramTab, setActiveDiagramTab] = useState<DiagramTab>("CURVES");
 
   // Input states
   const [auditInputText, setAuditInputText] = useState(
@@ -117,9 +98,15 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAutoHealDiff, setShowAutoHealDiff] = useState(false);
   const [copiedFix, setCopiedFix] = useState(false);
+  const [copiedExport, setCopiedExport] = useState(false);
 
   // Time-Travel Chronometer state (defaults to today)
   const [simulatedDate, setSimulatedDate] = useState("2026-11-20");
+
+  // Claims Filter states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("ALL");
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState("ALL");
 
   // Keep state synchronized with server-rendered initialAudit
   useEffect(() => {
@@ -167,6 +154,37 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
   ).length;
   const staleCount = dynamicClaims.filter((c) => c.dynamicScore < 45).length;
 
+  // Filtered Claims based on Search, Category, and Status filters
+  const filteredClaims = useMemo(() => {
+    return dynamicClaims.filter((claim) => {
+      // Category filter
+      if (selectedCategoryFilter !== "ALL") {
+        const cat = claim.category.toUpperCase();
+        if (selectedCategoryFilter === "API" && cat !== "API" && cat !== "API_VERSION") return false;
+        if (selectedCategoryFilter !== "API" && cat !== selectedCategoryFilter) return false;
+      }
+
+      // Status filter
+      if (selectedStatusFilter !== "ALL") {
+        if (selectedStatusFilter === "FRESH" && claim.dynamicScore < 80) return false;
+        if (selectedStatusFilter === "DECAYING" && (claim.dynamicScore < 45 || claim.dynamicScore >= 80)) return false;
+        if (selectedStatusFilter === "STALE" && claim.dynamicScore >= 45) return false;
+      }
+
+      // Search query
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        const matchesSpan = claim.originalSpan.toLowerCase().includes(query);
+        const matchesTruth = (claim.liveTruth || "").toLowerCase().includes(query);
+        const matchesReasoning = (claim.adjudicatorReasoning || "").toLowerCase().includes(query);
+        const matchesCat = claim.category.toLowerCase().includes(query);
+        return matchesSpan || matchesTruth || matchesReasoning || matchesCat;
+      }
+
+      return true;
+    });
+  }, [dynamicClaims, selectedCategoryFilter, selectedStatusFilter, searchQuery]);
+
   // Safe parse traces
   const telemetryTraces = useMemo(() => {
     try {
@@ -177,23 +195,28 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
     }
   }, [currentAudit.bifrostRoutingTrace]);
 
-  // Handle switching specimens
-  const loadSpecimen = async (slug: string) => {
+  // Handle switching specimens (0ms optimistic switch from pre-cache + background sync)
+  const loadSpecimen = useCallback(async (slug: string) => {
+    // 1. Instant zero-latency optimistic state switch
+    if (CACHED_SPECIMENS[slug]) {
+      const cached = CACHED_SPECIMENS[slug];
+      setCurrentAudit(cached);
+      setAuditInputText(cached.rawText);
+      setShowAutoHealDiff(false);
+    }
+
+    // 2. Background revalidation
     try {
-      setIsSubmitting(true);
       const res = await fetch(`/api/audit/${slug}`);
       if (res.ok) {
         const data = await res.json();
         setCurrentAudit(data.audit);
         setAuditInputText(data.audit.rawText);
-        setShowAutoHealDiff(false);
       }
     } catch (err) {
-      console.error("Failed to load specimen:", err);
-    } finally {
-      setIsSubmitting(false);
+      console.warn("Background revalidate skipped, cached specimen active:", err);
     }
-  };
+  }, []);
 
   // Handle submitting audit
   const handleRunAudit = async (e: React.FormEvent) => {
@@ -258,26 +281,50 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
     setTimeout(() => setCopiedFix(false), 2000);
   };
 
+  const handleExportReport = () => {
+    const reportJson = JSON.stringify(
+      {
+        lab: "HALF-LIFE AI Temporal Decay & Fact Freshness Lab",
+        timestamp: new Date().toISOString(),
+        chronometerSimulatedDate: simulatedDate,
+        audit: {
+          id: currentAudit.id,
+          title: currentAudit.title,
+          overallFreshnessScore: dynamicOverallScore,
+          searchSkipSavingsMs: currentAudit.searchSkipSavingsMs,
+          claimsCount: dynamicClaims.length,
+          claims: dynamicClaims,
+        },
+      },
+      null,
+      2
+    );
+
+    navigator.clipboard.writeText(reportJson);
+    setCopiedExport(true);
+    setTimeout(() => setCopiedExport(false), 2500);
+  };
+
   return (
     <div className="flex flex-col gap-6">
-      {/* Specimen Pills Selector */}
+      {/* Specimen Pills Selector - Instant 0ms Selection */}
       <div className="flex flex-col gap-3 rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
               Pre-Seeded Forensic Specimens
             </span>
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 font-mono text-[10px] font-semibold text-slate-600">
-              Instant 1-Click SQLite Audits
+            <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-700 border border-emerald-200/60">
+              Instant 0ms Switching
             </span>
           </div>
           <span className="text-[11px] text-slate-400 font-medium">
-            Select a specimen to test temporal decay dynamics
+            Select a specimen to test real-world temporal decay dynamics
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
-          {SPECIMENS.map((spec) => {
+          {SPECIMEN_METADATA.map((spec) => {
             const isSelected = currentAudit.slug === spec.slug;
             return (
               <button
@@ -286,7 +333,7 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                 disabled={isSubmitting}
                 className={`group relative flex flex-col justify-between rounded-2xl border p-3.5 text-left transition-all active:scale-[0.99] ${
                   isSelected
-                    ? "border-emerald-500 bg-gradient-to-b from-emerald-50/70 to-white shadow-xs ring-2 ring-emerald-500/20"
+                    ? "border-emerald-500 bg-gradient-to-b from-emerald-50/80 to-white shadow-xs ring-2 ring-emerald-500/25"
                     : "border-slate-200/80 bg-white/90 hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-2xs"
                 }`}
               >
@@ -299,7 +346,9 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                     </span>
                     <span
                       className={`h-2 w-2 rounded-full transition-all ${
-                        isSelected ? "bg-emerald-500 animate-pulse ring-2 ring-emerald-200" : "bg-slate-300 group-hover:bg-slate-400"
+                        isSelected
+                          ? "bg-emerald-500 animate-pulse ring-2 ring-emerald-200"
+                          : "bg-slate-300 group-hover:bg-slate-400"
                       }`}
                     />
                   </div>
@@ -316,17 +365,96 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
         </div>
       </div>
 
-      {/* Time-Travel Decay Chronometer */}
+      {/* Time-Travel Decay Chronometer (60fps rAF Throttled) */}
       <TimeTravelScrubber
         currentSimulatedDate={simulatedDate}
         onDateChange={setSimulatedDate}
       />
 
-      {/* Visual Mathematical Half-Life Decay Curves */}
-      <DecayCurveChart
-        claims={dynamicClaims as any}
-        simulatedDate={simulatedDate}
-      />
+      {/* Interactive Visual Diagram Studio (4 Unique Perspectives) */}
+      <div className="space-y-3">
+        {/* Diagram Mode Selector Tabs */}
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200/80 bg-white/90 p-1.5 shadow-2xs backdrop-blur-md">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <button
+              onClick={() => setActiveDiagramTab("CURVES")}
+              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-xs font-bold transition shadow-2xs ${
+                activeDiagramTab === "CURVES"
+                  ? "bg-slate-900 text-white shadow-xs"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              }`}
+            >
+              <TrendingDown className={`h-3.5 w-3.5 ${activeDiagramTab === "CURVES" ? "text-indigo-400" : "text-slate-400"}`} />
+              <span>Decay Trajectories</span>
+            </button>
+
+            <button
+              onClick={() => setActiveDiagramTab("RADAR")}
+              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-xs font-bold transition shadow-2xs ${
+                activeDiagramTab === "RADAR"
+                  ? "bg-slate-900 text-white shadow-xs"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              }`}
+            >
+              <Compass className={`h-3.5 w-3.5 ${activeDiagramTab === "RADAR" ? "text-purple-400" : "text-slate-400"}`} />
+              <span>Entropy Radar</span>
+            </button>
+
+            <button
+              onClick={() => setActiveDiagramTab("SANDBOX")}
+              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-xs font-bold transition shadow-2xs ${
+                activeDiagramTab === "SANDBOX"
+                  ? "bg-slate-900 text-white shadow-xs"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              }`}
+            >
+              <Calculator className={`h-3.5 w-3.5 ${activeDiagramTab === "SANDBOX" ? "text-amber-400" : "text-slate-400"}`} />
+              <span>Formula Sandbox</span>
+            </button>
+
+            <button
+              onClick={() => setActiveDiagramTab("FLOW")}
+              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-xs font-bold transition shadow-2xs ${
+                activeDiagramTab === "FLOW"
+                  ? "bg-slate-900 text-white shadow-xs"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              }`}
+            >
+              <Layers className={`h-3.5 w-3.5 ${activeDiagramTab === "FLOW" ? "text-blue-400" : "text-slate-400"}`} />
+              <span>Routing Architecture</span>
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 px-2 text-[11px] font-mono text-slate-400 hidden md:flex">
+            <span>Chronometer Synchronized</span>
+            <span>•</span>
+            <span className="text-indigo-600 font-bold">{simulatedDate}</span>
+          </div>
+        </div>
+
+        {/* Dynamic Diagram Render */}
+        {activeDiagramTab === "CURVES" && (
+          <DecayCurveChart
+            claims={dynamicClaims as any}
+            simulatedDate={simulatedDate}
+          />
+        )}
+
+        {activeDiagramTab === "RADAR" && (
+          <KnowledgeEntropyRadar
+            claims={dynamicClaims as any}
+            simulatedDate={simulatedDate}
+          />
+        )}
+
+        {activeDiagramTab === "SANDBOX" && (
+          <DecaySimulatorSandbox />
+        )}
+
+        {activeDiagramTab === "FLOW" && (
+          <PipelineArchitectureFlow />
+        )}
+      </div>
 
       {/* Input Mode Selector & Forms */}
       <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 to-slate-50/60 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
@@ -466,8 +594,17 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                 </div>
               </div>
 
-              {/* Auto-Heal Diff Toggle */}
+              {/* Action Buttons: Auto-Heal Diff & Report Export */}
               <div className="flex items-center gap-2">
+                <button
+                  onClick={handleExportReport}
+                  className="flex items-center gap-1.5 rounded-xl border border-slate-200/90 bg-white px-3 py-1.5 font-mono text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition active:scale-95"
+                  title="Export Forensic Compliance Report JSON"
+                >
+                  {copiedExport ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Download className="h-3.5 w-3.5 text-slate-500" />}
+                  <span>{copiedExport ? "JSON Copied!" : "Export JSON"}</span>
+                </button>
+
                 <button
                   onClick={() => setShowAutoHealDiff(!showAutoHealDiff)}
                   className={`flex items-center gap-2 rounded-xl border px-3.5 py-1.5 text-xs font-bold transition shadow-2xs active:scale-95 ${
@@ -556,90 +693,160 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
         </div>
       </div>
 
-      {/* Claims Breakdown Grid */}
+      {/* Claims Breakdown Grid with Filter & Search Controls */}
       <div className="flex flex-col gap-3.5">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800">
               Atomic Claims & Forensic Evidence
             </h3>
             <span className="rounded-full bg-slate-100 px-2 py-0.5 font-mono text-[10px] font-semibold text-slate-600">
-              {dynamicClaims.length} Exhibits
+              {filteredClaims.length} of {dynamicClaims.length} Exhibits
             </span>
           </div>
+
           <span className="font-mono text-xs text-slate-400 hidden sm:inline">
             Click any exhibit card to inspect ground-truth sources in modal
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {dynamicClaims.map((claim) => {
-            const badge = formatScoreBadge(claim.dynamicScore);
-            const cat = formatCategoryLabel(claim.category);
+        {/* Filter & Search Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-slate-200/80 bg-white/90 p-2.5 shadow-2xs backdrop-blur-md">
+          {/* Search Box */}
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search claims, reasoning, or consensus..."
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-8 pr-3 py-1.5 font-mono text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+          </div>
 
-            // Left colored border accent based on category
-            const accentBorder =
-              claim.category === "API"
-                ? "border-l-blue-500"
-                : claim.category === "PRICING"
-                ? "border-l-amber-500"
-                : claim.category === "LEADERSHIP"
-                ? "border-l-purple-500"
-                : claim.category === "REGULATION"
-                ? "border-l-pink-500"
-                : "border-l-emerald-500";
-
-            return (
-              <Link
-                key={claim.id}
-                href={`/audit/${currentAudit.id}/claim/${claim.id}`}
-                className={`group relative flex flex-col justify-between rounded-3xl border border-slate-200/80 border-l-[4px] ${accentBorder} bg-gradient-to-b from-white/95 to-slate-50/60 p-5 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all backdrop-blur-xl active:scale-[0.99]`}
+          {/* Category Filter Chips */}
+          <div className="flex flex-wrap items-center gap-1 text-[10px] font-mono font-bold">
+            {["ALL", "API", "PRICING", "LEADERSHIP", "REGULATION", "STATIC"].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategoryFilter(cat)}
+                className={`rounded-lg px-2 py-1 transition ${
+                  selectedCategoryFilter === cat
+                    ? "bg-slate-900 text-white shadow-2xs"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
               >
-                <div className="space-y-3">
-                  {/* Card Header */}
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`rounded-md border px-2 py-0.5 font-mono text-[10px] font-bold uppercase ${cat.colorClass}`}
-                    >
-                      {cat.label}
-                    </span>
+                {cat}
+              </button>
+            ))}
+          </div>
 
-                    <span
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold shadow-2xs ${badge.badgeClass}`}
-                    >
-                      <span className={`h-1.5 w-1.5 rounded-full ${claim.dynamicScore >= 80 ? "bg-emerald-500" : claim.dynamicScore >= 45 ? "bg-amber-500" : "bg-rose-500"} animate-pulse`} />
-                      {badge.label} ({claim.dynamicScore}%)
-                    </span>
-                  </div>
-
-                  {/* Assertion Snippet */}
-                  <div className="font-mono text-xs text-slate-800 line-clamp-3 leading-relaxed font-medium">
-                    &ldquo;{claim.originalSpan}&rdquo;
-                  </div>
-
-                  {/* Ground Truth Summary */}
-                  <div className="rounded-xl border border-slate-200/70 bg-white/80 p-3 text-[11px] text-slate-600 line-clamp-2 shadow-2xs">
-                    <span className="font-bold text-slate-800">Consensus: </span>
-                    {claim.liveTruth}
-                  </div>
-                </div>
-
-                {/* Footer Metadata */}
-                <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[11px]">
-                  <div className="flex items-center gap-1 font-mono text-slate-400">
-                    <Clock className="h-3 w-3" />
-                    <span>t½: {claim.halfLifeDays >= 99999 ? "Static / ∞" : `${claim.halfLifeDays}d`}</span>
-                  </div>
-
-                  <div className="flex items-center gap-1 font-bold text-indigo-600 group-hover:translate-x-0.5 transition-transform">
-                    <span>Inspect Evidence</span>
-                    <ArrowRight className="h-3 w-3" />
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+          {/* Status Filter Chips */}
+          <div className="flex items-center gap-1 text-[10px] font-mono font-bold border-l border-slate-200 pl-2">
+            {[
+              { id: "ALL", label: "All Status" },
+              { id: "FRESH", label: "Fresh" },
+              { id: "DECAYING", label: "Decaying" },
+              { id: "STALE", label: "Stale" },
+            ].map((st) => (
+              <button
+                key={st.id}
+                onClick={() => setSelectedStatusFilter(st.id)}
+                className={`rounded-lg px-2 py-1 transition ${
+                  selectedStatusFilter === st.id
+                    ? "bg-indigo-600 text-white shadow-2xs"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {st.label}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {/* Claims Cards */}
+        {filteredClaims.length === 0 ? (
+          <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 font-mono text-xs">
+            No claims match your search or filter criteria.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredClaims.map((claim) => {
+              const badge = formatScoreBadge(claim.dynamicScore);
+              const cat = formatCategoryLabel(claim.category);
+
+              // Left colored border accent based on category
+              const accentBorder =
+                claim.category === "API" || claim.category === "API_VERSION"
+                  ? "border-l-blue-500"
+                  : claim.category === "PRICING"
+                  ? "border-l-amber-500"
+                  : claim.category === "LEADERSHIP"
+                  ? "border-l-purple-500"
+                  : claim.category === "REGULATION"
+                  ? "border-l-pink-500"
+                  : "border-l-emerald-500";
+
+              return (
+                <Link
+                  key={claim.id}
+                  href={`/audit/${currentAudit.id}/claim/${claim.id}`}
+                  className={`group relative flex flex-col justify-between rounded-3xl border border-slate-200/80 border-l-[4px] ${accentBorder} bg-gradient-to-b from-white/95 to-slate-50/60 p-5 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all backdrop-blur-xl active:scale-[0.99]`}
+                >
+                  <div className="space-y-3">
+                    {/* Card Header */}
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={`rounded-md border px-2 py-0.5 font-mono text-[10px] font-bold uppercase ${cat.colorClass}`}
+                      >
+                        {cat.label}
+                      </span>
+
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold shadow-2xs ${badge.badgeClass}`}
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            claim.dynamicScore >= 80
+                              ? "bg-emerald-500"
+                              : claim.dynamicScore >= 45
+                              ? "bg-amber-500"
+                              : "bg-rose-500"
+                          } animate-pulse`}
+                        />
+                        {badge.label} ({claim.dynamicScore}%)
+                      </span>
+                    </div>
+
+                    {/* Assertion Snippet */}
+                    <div className="font-mono text-xs text-slate-800 line-clamp-3 leading-relaxed font-medium">
+                      &ldquo;{claim.originalSpan}&rdquo;
+                    </div>
+
+                    {/* Ground Truth Summary */}
+                    <div className="rounded-xl border border-slate-200/70 bg-white/80 p-3 text-[11px] text-slate-600 line-clamp-2 shadow-2xs">
+                      <span className="font-bold text-slate-800">Consensus: </span>
+                      {claim.liveTruth}
+                    </div>
+                  </div>
+
+                  {/* Footer Metadata */}
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[11px]">
+                    <div className="flex items-center gap-1 font-mono text-slate-400">
+                      <Clock className="h-3 w-3" />
+                      <span>t½: {claim.halfLifeDays >= 99999 ? "Static / ∞" : `${claim.halfLifeDays}d`}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1 font-bold text-indigo-600 group-hover:translate-x-0.5 transition-transform">
+                      <span>Inspect Evidence</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
