@@ -9,7 +9,8 @@
     "lint": "next lint",
     "prisma:generate": "node node_modules/prisma/build/index.js generate",
     "prisma:push": "node node_modules/prisma/build/index.js db push",
-    "prisma:seed": "node node_modules/tsx/dist/cli.mjs prisma/seed.ts"
+    "prisma:seed": "node node_modules/tsx/dist/cli.mjs prisma/seed.ts",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "node node_modules/tsx/dist/cli.mjs prisma/seed.ts"
