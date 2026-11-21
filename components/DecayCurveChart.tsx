@@ -78,6 +78,12 @@ const DEFAULT_CATEGORY_STYLE = {
   velocity: "Standard",
 };
 
+import {
+  CHRONOMETER_MIN_EPOCH,
+  CHRONOMETER_MAX_EPOCH,
+  CHRONOMETER_MILESTONES,
+} from "@/lib/chronometer";
+
 export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps) {
   const [hoveredPoint, setHoveredPoint] = useState<{
     category: string;
@@ -87,9 +93,9 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
     y: number;
   } | null>(null);
 
-  // Time boundaries: 2023-06-01 to 2026-12-01 (approx 42 months)
-  const START_EPOCH = new Date("2023-06-01").getTime();
-  const END_EPOCH = new Date("2026-12-01").getTime();
+  // Canonical Timeline boundaries (matches TimeTravelScrubber 1:1)
+  const START_EPOCH = CHRONOMETER_MIN_EPOCH;
+  const END_EPOCH = CHRONOMETER_MAX_EPOCH;
 
   // Current simulation marker position
   const simEpoch = new Date(simulatedDate).getTime() || END_EPOCH;
@@ -164,18 +170,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
         points,
       };
     });
-  }, [claims]);
-
-  // Timeline year milestones
-  const yearTicks = [
-    { label: "Jun 2023", date: "2023-06-01", epoch: new Date("2023-06-01").getTime() },
-    { label: "Jan 2024", date: "2024-01-01", epoch: new Date("2024-01-01").getTime() },
-    { label: "Jul 2024", date: "2024-07-01", epoch: new Date("2024-07-01").getTime() },
-    { label: "Jan 2025", date: "2025-01-01", epoch: new Date("2025-01-01").getTime() },
-    { label: "Jul 2025", date: "2025-07-01", epoch: new Date("2025-07-01").getTime() },
-    { label: "Jan 2026", date: "2026-01-01", epoch: new Date("2026-01-01").getTime() },
-    { label: "Nov 2026", date: "2026-11-20", epoch: new Date("2026-11-20").getTime() },
-  ];
+  }, [claims, START_EPOCH, END_EPOCH, PADDING.left, PADDING.top, CHART_WIDTH, CHART_HEIGHT]);
 
   const simMarkerX = PADDING.left + simRatio * CHART_WIDTH;
 
@@ -313,9 +308,9 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
             Critical Stale Boundary (45%)
           </text>
 
-          {/* X-axis date milestones */}
-          {yearTicks.map((tick) => {
-            const x = PADDING.left + ((tick.epoch - START_EPOCH) / (END_EPOCH - START_EPOCH)) * CHART_WIDTH;
+          {/* X-axis date milestones (100% matched to Chronometer milestones) */}
+          {CHRONOMETER_MILESTONES.map((tick) => {
+            const x = PADDING.left + (tick.percent / 100) * CHART_WIDTH;
             return (
               <g key={tick.date}>
                 <line
@@ -323,7 +318,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                   y1={PADDING.top}
                   x2={x}
                   y2={PADDING.top + CHART_HEIGHT}
-                  stroke="#F8FAFC"
+                  stroke="#F1F5F9"
                   strokeWidth="1"
                 />
                 <line

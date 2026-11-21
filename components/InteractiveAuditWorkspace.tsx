@@ -39,6 +39,7 @@ import { FreshnessGauge } from "./FreshnessGauge";
 import { TelemetryDrawer } from "./TelemetryDrawer";
 import { formatCategoryLabel, formatScoreBadge } from "@/lib/utils";
 import { SPECIMEN_METADATA, CACHED_SPECIMENS } from "@/lib/specimens";
+import { calculateMathematicalFreshness } from "@/lib/chronometer";
 
 export interface AuditReportData {
   id: string;
@@ -118,24 +119,20 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
     }
   }, [initialAudit]);
 
-  // Calculate dynamic freshness based on simulated date
+  // Calculate 100% mathematically truthful dynamic freshness based on simulated date
   const dynamicClaims = useMemo(() => {
     return (currentAudit.claims || []).map((claim) => {
-      // If simulated date is before the claim expired, it was still 100% fresh!
-      if (claim.expiredAtDate !== "NEVER" && simulatedDate < claim.expiredAtDate) {
-        return {
-          ...claim,
-          dynamicScore: 100,
-          dynamicStatus: "FRESH",
-          isExpiredAtSimDate: false,
-        };
-      }
-      // If simulated date is after or on expiration, it has decayed
+      const { score, status, isExpired } = calculateMathematicalFreshness(
+        claim.halfLifeDays,
+        claim.expiredAtDate,
+        simulatedDate
+      );
+
       return {
         ...claim,
-        dynamicScore: claim.freshnessScore,
-        dynamicStatus: claim.status,
-        isExpiredAtSimDate: claim.expiredAtDate !== "NEVER",
+        dynamicScore: score,
+        dynamicStatus: status,
+        isExpiredAtSimDate: isExpired,
       };
     });
   }, [currentAudit.claims, simulatedDate]);
@@ -775,23 +772,37 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
               const badge = formatScoreBadge(claim.dynamicScore);
               const cat = formatCategoryLabel(claim.category);
 
-              // Left colored border accent based on category
-              const accentBorder =
-                claim.category === "API" || claim.category === "API_VERSION"
-                  ? "border-l-blue-500"
-                  : claim.category === "PRICING"
-                  ? "border-l-amber-500"
-                  : claim.category === "LEADERSHIP"
-                  ? "border-l-purple-500"
-                  : claim.category === "REGULATION"
-                  ? "border-l-pink-500"
-                  : "border-l-emerald-500";
+              // Left colored border accent and luminous background based on category
+              const isApi = claim.category === "API" || claim.category === "API_VERSION";
+              const isPricing = claim.category === "PRICING";
+              const isLeadership = claim.category === "LEADERSHIP";
+              const isRegulation = claim.category === "REGULATION";
+
+              const accentBorder = isApi
+                ? "border-l-blue-500 hover:border-blue-300"
+                : isPricing
+                ? "border-l-amber-500 hover:border-amber-300"
+                : isLeadership
+                ? "border-l-purple-500 hover:border-purple-300"
+                : isRegulation
+                ? "border-l-pink-500 hover:border-pink-300"
+                : "border-l-emerald-500 hover:border-emerald-300";
+
+              const cardBg = isApi
+                ? "bg-gradient-to-b from-blue-50/40 via-white to-slate-50/60"
+                : isPricing
+                ? "bg-gradient-to-b from-amber-50/40 via-white to-slate-50/60"
+                : isLeadership
+                ? "bg-gradient-to-b from-purple-50/40 via-white to-slate-50/60"
+                : isRegulation
+                ? "bg-gradient-to-b from-pink-50/40 via-white to-slate-50/60"
+                : "bg-gradient-to-b from-emerald-50/40 via-white to-slate-50/60";
 
               return (
                 <Link
                   key={claim.id}
                   href={`/audit/${currentAudit.id}/claim/${claim.id}`}
-                  className={`group relative flex flex-col justify-between rounded-3xl border border-slate-200/80 border-l-[4px] ${accentBorder} bg-gradient-to-b from-white/95 to-slate-50/60 p-5 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all backdrop-blur-xl active:scale-[0.99]`}
+                  className={`group relative flex flex-col justify-between rounded-3xl border border-slate-200/80 border-l-[5px] ${accentBorder} ${cardBg} p-5 shadow-2xs hover:shadow-md transition-all backdrop-blur-xl active:scale-[0.99]`}
                 >
                   <div className="space-y-3">
                     {/* Card Header */}

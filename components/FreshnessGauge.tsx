@@ -66,9 +66,6 @@ export function FreshnessGauge({
               <stop offset="0%" stopColor="#F43F5E" />
               <stop offset="100%" stopColor="#9333EA" />
             </linearGradient>
-            <filter id="gaugeGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor={strokeColor} floodOpacity="0.25" />
-            </filter>
           </defs>
 
           {/* Background track */}
@@ -91,8 +88,7 @@ export function FreshnessGauge({
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
-            filter="url(#gaugeGlow)"
-            className="transition-all duration-500 ease-out"
+            className="transition-all duration-300 ease-out"
           />
         </svg>
 
