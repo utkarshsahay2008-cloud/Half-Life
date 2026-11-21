@@ -17,8 +17,23 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
-      <body className="flex min-h-full flex-col bg-[#F8FAFC] antialiased">
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.getItem('half-life-theme') === 'dark') {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="flex min-h-full flex-col bg-[#F8FAFC] dark:bg-[#070A13] text-slate-900 dark:text-slate-100 antialiased transition-colors duration-200">
         {/* Atmospheric Refraction Ambient Light Washes & Delicate Grid */}
         <div className="ambient-glow-mesh bg-subtle-grid">
           <div className="ambient-orb-1" />
@@ -39,10 +54,10 @@ export default function RootLayout({
         {modal}
 
         {/* Footer */}
-        <footer className="relative z-10 border-t border-slate-200/80 bg-white/70 py-6 backdrop-blur-md">
-          <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 sm:flex-row sm:px-6 lg:px-8 text-xs text-slate-500">
+        <footer className="relative z-10 border-t border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-[#070A13]/80 py-6 backdrop-blur-md transition-colors">
+          <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 sm:flex-row sm:px-6 lg:px-8 text-xs text-slate-500 dark:text-slate-400">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-800">HALF-LIFE</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">HALF-LIFE</span>
               <span>— AI Temporal Decay & Fact Freshness Lab</span>
             </div>
             <div className="flex items-center gap-4">

@@ -66,23 +66,23 @@ export function DecaySimulatorSandbox() {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 dark:from-[#0B1120]/90 dark:via-[#0D1527]/80 dark:to-[#070A13]/90 p-5 sm:p-6 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 text-amber-700 border border-amber-200/80 shadow-2xs">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/60 dark:to-orange-950/60 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs">
             <Calculator className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
                 Interactive Decay Parameter Sandbox
               </h3>
-              <span className="font-mono text-[10px] font-bold text-amber-700 bg-amber-50/80 border border-amber-200/70 rounded-full px-2.5 py-0.5 shadow-2xs">
+              <span className="font-mono text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-950/60 border border-amber-200/70 dark:border-amber-800/60 rounded-full px-2.5 py-0.5 shadow-2xs">
                 Live Formula Simulator
               </span>
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
               Simulate entropy decay parameters and model custom factual lifecycles with real-time recalculation.
             </p>
           </div>
@@ -90,14 +90,14 @@ export function DecaySimulatorSandbox() {
 
         {/* Live Calculation Output Badge */}
         <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="text-slate-400 font-medium">Result Freshness:</span>
+          <span className="text-slate-400 dark:text-slate-500 font-medium">Result Freshness:</span>
           <span
             className={`rounded-xl px-3 py-1 font-black shadow-xs border ${
               currentFreshness >= 80
-                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60"
                 : currentFreshness >= 45
-                ? "bg-amber-50 text-amber-800 border-amber-200"
-                : "bg-rose-50 text-rose-800 border-rose-200"
+                ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/60"
+                : "bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800/60"
             }`}
           >
             {currentFreshness}% Fresh
@@ -107,28 +107,28 @@ export function DecaySimulatorSandbox() {
 
       {/* Preset Buttons */}
       <div className="flex flex-wrap items-center gap-2 pt-3">
-        <span className="text-[11px] font-bold text-slate-500">Real-World Benchmarks:</span>
+        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Real-World Benchmarks:</span>
         <button
           onClick={() => setPreset(90, 100, 140)}
-          className="rounded-xl border border-blue-200 bg-blue-50/80 px-2.5 py-1 font-mono text-[10px] font-bold text-blue-800 hover:bg-blue-100 transition shadow-2xs"
+          className="rounded-xl border border-blue-200 dark:border-blue-800/60 bg-blue-50/80 dark:bg-blue-950/60 px-2.5 py-1 font-mono text-[10px] font-bold text-blue-800 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition shadow-2xs"
         >
           API v1 Sunset (t½ = 90d)
         </button>
         <button
           onClick={() => setPreset(60, 100, 95)}
-          className="rounded-xl border border-amber-200 bg-amber-50/80 px-2.5 py-1 font-mono text-[10px] font-bold text-amber-800 hover:bg-amber-100 transition shadow-2xs"
+          className="rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50/80 dark:bg-amber-950/60 px-2.5 py-1 font-mono text-[10px] font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900 transition shadow-2xs"
         >
           Token Rate Cards (t½ = 60d)
         </button>
         <button
           onClick={() => setPreset(180, 100, 210)}
-          className="rounded-xl border border-purple-200 bg-purple-50/80 px-2.5 py-1 font-mono text-[10px] font-bold text-purple-800 hover:bg-purple-100 transition shadow-2xs"
+          className="rounded-xl border border-purple-200 dark:border-purple-800/60 bg-purple-50/80 dark:bg-purple-950/60 px-2.5 py-1 font-mono text-[10px] font-bold text-purple-800 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900 transition shadow-2xs"
         >
           Leadership Shift (t½ = 180d)
         </button>
         <button
           onClick={() => setPreset(9999, 100, 300)}
-          className="rounded-xl border border-emerald-200 bg-emerald-50/80 px-2.5 py-1 font-mono text-[10px] font-bold text-emerald-800 hover:bg-emerald-100 transition shadow-2xs"
+          className="rounded-xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/80 dark:bg-emerald-950/60 px-2.5 py-1 font-mono text-[10px] font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900 transition shadow-2xs"
         >
           Static Law (t½ = ∞)
         </button>
@@ -137,12 +137,12 @@ export function DecaySimulatorSandbox() {
       {/* Main Grid: Controls + Interactive Curve + Metrics */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pt-4">
         {/* Sliders Controls */}
-        <div className="lg:col-span-5 flex flex-col gap-3.5 bg-white/70 rounded-2xl border border-slate-200/80 p-4 shadow-2xs">
+        <div className="lg:col-span-5 flex flex-col gap-3.5 bg-white/70 dark:bg-slate-900/80 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 shadow-2xs">
           {/* Slider 1: Half-Life Days */}
           <div>
             <div className="flex items-center justify-between text-xs mb-1">
-              <span className="font-bold text-slate-700">Half-Life (t½):</span>
-              <span className="font-mono font-bold text-indigo-700">
+              <span className="font-bold text-slate-700 dark:text-slate-300">Half-Life (t½):</span>
+              <span className="font-mono font-bold text-indigo-700 dark:text-indigo-400">
                 {halfLifeDays >= 9999 ? "∞ (Static)" : `${halfLifeDays} days`}
               </span>
             </div>
@@ -153,9 +153,9 @@ export function DecaySimulatorSandbox() {
               step="5"
               value={halfLifeDays >= 9999 ? 365 : halfLifeDays}
               onChange={(e) => setHalfLifeDays(Number(e.target.value))}
-              className="w-full accent-indigo-600 h-2 bg-slate-100 rounded-lg cursor-pointer"
+              className="w-full accent-indigo-600 h-2 bg-slate-100 dark:bg-slate-800 rounded-lg cursor-pointer"
             />
-            <div className="flex justify-between text-[9px] font-mono text-slate-400 mt-0.5">
+            <div className="flex justify-between text-[9px] font-mono text-slate-400 dark:text-slate-500 mt-0.5">
               <span>15d (Hyper Decay)</span>
               <span>180d</span>
               <span>365d (Gradual)</span>
@@ -165,8 +165,8 @@ export function DecaySimulatorSandbox() {
           {/* Slider 2: Elapsed Days */}
           <div>
             <div className="flex items-center justify-between text-xs mb-1">
-              <span className="font-bold text-slate-700">Time Elapsed (t):</span>
-              <span className="font-mono font-bold text-amber-700">{elapsedDays} days</span>
+              <span className="font-bold text-slate-700 dark:text-slate-300">Time Elapsed (t):</span>
+              <span className="font-mono font-bold text-amber-700 dark:text-amber-400">{elapsedDays} days</span>
             </div>
             <input
               type="range"
@@ -175,9 +175,9 @@ export function DecaySimulatorSandbox() {
               step="5"
               value={elapsedDays}
               onChange={(e) => setElapsedDays(Number(e.target.value))}
-              className="w-full accent-amber-600 h-2 bg-slate-100 rounded-lg cursor-pointer"
+              className="w-full accent-amber-600 h-2 bg-slate-100 dark:bg-slate-800 rounded-lg cursor-pointer"
             />
-            <div className="flex justify-between text-[9px] font-mono text-slate-400 mt-0.5">
+            <div className="flex justify-between text-[9px] font-mono text-slate-400 dark:text-slate-500 mt-0.5">
               <span>Day 0 (Initial)</span>
               <span>180d</span>
               <span>365d (1 Year)</span>
@@ -187,8 +187,8 @@ export function DecaySimulatorSandbox() {
           {/* Slider 3: Initial Confidence N0 */}
           <div>
             <div className="flex items-center justify-between text-xs mb-1">
-              <span className="font-bold text-slate-700">Initial Confidence (N₀):</span>
-              <span className="font-mono font-bold text-slate-800">{initialConfidence}%</span>
+              <span className="font-bold text-slate-700 dark:text-slate-300">Initial Confidence (N₀):</span>
+              <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{initialConfidence}%</span>
             </div>
             <input
               type="range"
@@ -197,14 +197,14 @@ export function DecaySimulatorSandbox() {
               step="5"
               value={initialConfidence}
               onChange={(e) => setInitialConfidence(Number(e.target.value))}
-              className="w-full accent-slate-800 h-2 bg-slate-100 rounded-lg cursor-pointer"
+              className="w-full accent-slate-800 dark:accent-indigo-500 h-2 bg-slate-100 dark:bg-slate-800 rounded-lg cursor-pointer"
             />
           </div>
         </div>
 
         {/* Visual Simulated SVG Curve */}
         <div className="lg:col-span-7 flex flex-col gap-2">
-          <div className="relative w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-3 shadow-inner">
+          <div className="relative w-full overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950 p-3 shadow-inner">
             <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className="w-full h-auto select-none overflow-visible">
               <defs>
                 <linearGradient id="sandboxGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -218,8 +218,8 @@ export function DecaySimulatorSandbox() {
                 const y = PAD.top + H - (sc / 100) * H;
                 return (
                   <g key={sc}>
-                    <line x1={PAD.left} y1={y} x2={PAD.left + W} y2={y} stroke="#F1F5F9" strokeWidth="1" />
-                    <text x={PAD.left - 6} y={y + 3} textAnchor="end" className="fill-slate-400 font-mono text-[8px]">
+                    <line x1={PAD.left} y1={y} x2={PAD.left + W} y2={y} stroke="#F1F5F9" strokeWidth="1" className="stroke-slate-100 dark:stroke-slate-850" />
+                    <text x={PAD.left - 6} y={y + 3} textAnchor="end" className="fill-slate-400 dark:fill-slate-500 font-mono text-[8px]">
                       {sc}%
                     </text>
                   </g>
@@ -235,6 +235,7 @@ export function DecaySimulatorSandbox() {
                 stroke="#FDA4AF"
                 strokeWidth="1"
                 strokeDasharray="3 3"
+                className="stroke-rose-300 dark:stroke-rose-800"
               />
 
               {/* Curve area & path */}
@@ -255,7 +256,7 @@ export function DecaySimulatorSandbox() {
               <text
                 x={Math.min(currentX + 8, SVG_W - 70)}
                 y={Math.max(currentY - 8, PAD.top + 10)}
-                className="fill-indigo-900 font-mono text-[10px] font-bold"
+                className="fill-indigo-900 dark:fill-indigo-300 font-mono text-[10px] font-bold"
               >
                 {currentFreshness}% @ {elapsedDays}d
               </text>
@@ -264,19 +265,19 @@ export function DecaySimulatorSandbox() {
 
           {/* Metrics Row */}
           <div className="grid grid-cols-3 gap-2 text-center text-xs">
-            <div className="rounded-xl border border-slate-200/80 bg-white/80 p-2 shadow-2xs">
-              <span className="block text-[10px] font-bold text-slate-400 uppercase">Decay Constant (λ)</span>
-              <span className="font-mono font-bold text-slate-800">{decayConstant} / day</span>
+            <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-2 shadow-2xs">
+              <span className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Decay Constant (λ)</span>
+              <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{decayConstant} / day</span>
             </div>
-            <div className="rounded-xl border border-slate-200/80 bg-white/80 p-2 shadow-2xs">
-              <span className="block text-[10px] font-bold text-slate-400 uppercase">Status Class</span>
-              <span className={`font-mono font-bold ${currentFreshness >= 80 ? "text-emerald-700" : currentFreshness >= 45 ? "text-amber-700" : "text-rose-700"}`}>
+            <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-2 shadow-2xs">
+              <span className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Status Class</span>
+              <span className={`font-mono font-bold ${currentFreshness >= 80 ? "text-emerald-700 dark:text-emerald-400" : currentFreshness >= 45 ? "text-amber-700 dark:text-amber-400" : "text-rose-700 dark:text-rose-400"}`}>
                 {currentFreshness >= 80 ? "PRODUCTION FRESH" : currentFreshness >= 45 ? "DECAY WARNING" : "CRITICAL STALE"}
               </span>
             </div>
-            <div className="rounded-xl border border-slate-200/80 bg-white/80 p-2 shadow-2xs">
-              <span className="block text-[10px] font-bold text-slate-400 uppercase">Grounding Cadence</span>
-              <span className="font-mono font-bold text-teal-700">{recommendedInterval}</span>
+            <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-2 shadow-2xs">
+              <span className="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Grounding Cadence</span>
+              <span className="font-mono font-bold text-teal-700 dark:text-teal-400">{recommendedInterval}</span>
             </div>
           </div>
         </div>

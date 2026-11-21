@@ -305,17 +305,17 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
   return (
     <div className="flex flex-col gap-6">
       {/* Specimen Pills Selector - Instant 0ms Selection */}
-      <div className="flex flex-col gap-3 rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+      <div className="flex flex-col gap-3 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 to-slate-50/70 dark:from-[#0B1120]/90 dark:to-[#070A13]/90 p-5 sm:p-6 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
               Pre-Seeded Forensic Specimens
             </span>
-            <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-700 border border-emerald-200/60">
+            <span className="rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
               Instant 0ms Switching
             </span>
           </div>
-          <span className="text-[11px] text-slate-400 font-medium">
+          <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
             Select a specimen to test real-world temporal decay dynamics
           </span>
         </div>
@@ -330,8 +330,8 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                 disabled={isSubmitting}
                 className={`group relative flex flex-col justify-between rounded-2xl border p-3.5 text-left transition-all active:scale-[0.99] ${
                   isSelected
-                    ? "border-emerald-500 bg-gradient-to-b from-emerald-50/80 to-white shadow-xs ring-2 ring-emerald-500/25"
-                    : "border-slate-200/80 bg-white/90 hover:border-slate-300 hover:bg-slate-50/70 hover:shadow-2xs"
+                    ? "border-emerald-500 bg-gradient-to-b from-emerald-50/80 to-white dark:from-emerald-950/50 dark:to-slate-900 shadow-xs ring-2 ring-emerald-500/25"
+                    : "border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-slate-900/80 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/70 dark:hover:bg-slate-850/80 hover:shadow-2xs"
                 }`}
               >
                 <div className="space-y-1.5">
@@ -344,16 +344,16 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                     <span
                       className={`h-2 w-2 rounded-full transition-all ${
                         isSelected
-                          ? "bg-emerald-500 animate-pulse ring-2 ring-emerald-200"
-                          : "bg-slate-300 group-hover:bg-slate-400"
+                          ? "bg-emerald-500 animate-pulse ring-2 ring-emerald-200 dark:ring-emerald-900"
+                          : "bg-slate-300 dark:bg-slate-700 group-hover:bg-slate-400 dark:group-hover:bg-slate-600"
                       }`}
                     />
                   </div>
-                  <h4 className="font-bold text-xs text-slate-900 group-hover:text-indigo-950 transition-colors">
+                  <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100 group-hover:text-indigo-950 dark:group-hover:text-indigo-300 transition-colors">
                     {spec.label}
                   </h4>
                 </div>
-                <p className="mt-2 text-[10px] text-slate-500 line-clamp-2 leading-relaxed">
+                <p className="mt-2 text-[10px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
                   {spec.description}
                 </p>
               </button>
@@ -371,17 +371,17 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
       {/* Interactive Visual Diagram Studio (4 Unique Perspectives) */}
       <div className="space-y-3">
         {/* Diagram Mode Selector Tabs */}
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200/80 bg-white/90 p-1.5 shadow-2xs backdrop-blur-md">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-1.5 shadow-2xs backdrop-blur-md">
           <div className="flex flex-wrap items-center gap-1.5">
             <button
               onClick={() => setActiveDiagramTab("CURVES")}
               className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-xs font-bold transition shadow-2xs ${
                 activeDiagramTab === "CURVES"
-                  ? "bg-slate-900 text-white shadow-xs"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  ? "bg-slate-900 dark:bg-indigo-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
-              <TrendingDown className={`h-3.5 w-3.5 ${activeDiagramTab === "CURVES" ? "text-indigo-400" : "text-slate-400"}`} />
+              <TrendingDown className={`h-3.5 w-3.5 ${activeDiagramTab === "CURVES" ? "text-indigo-400 dark:text-white" : "text-slate-400"}`} />
               <span>Decay Trajectories</span>
             </button>
 
@@ -389,11 +389,11 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
               onClick={() => setActiveDiagramTab("RADAR")}
               className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-xs font-bold transition shadow-2xs ${
                 activeDiagramTab === "RADAR"
-                  ? "bg-slate-900 text-white shadow-xs"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  ? "bg-slate-900 dark:bg-indigo-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
-              <Compass className={`h-3.5 w-3.5 ${activeDiagramTab === "RADAR" ? "text-purple-400" : "text-slate-400"}`} />
+              <Compass className={`h-3.5 w-3.5 ${activeDiagramTab === "RADAR" ? "text-purple-400 dark:text-white" : "text-slate-400"}`} />
               <span>Entropy Radar</span>
             </button>
 
@@ -401,11 +401,11 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
               onClick={() => setActiveDiagramTab("SANDBOX")}
               className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-xs font-bold transition shadow-2xs ${
                 activeDiagramTab === "SANDBOX"
-                  ? "bg-slate-900 text-white shadow-xs"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  ? "bg-slate-900 dark:bg-indigo-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
-              <Calculator className={`h-3.5 w-3.5 ${activeDiagramTab === "SANDBOX" ? "text-amber-400" : "text-slate-400"}`} />
+              <Calculator className={`h-3.5 w-3.5 ${activeDiagramTab === "SANDBOX" ? "text-amber-400 dark:text-white" : "text-slate-400"}`} />
               <span>Formula Sandbox</span>
             </button>
 
@@ -413,19 +413,19 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
               onClick={() => setActiveDiagramTab("FLOW")}
               className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-xs font-bold transition shadow-2xs ${
                 activeDiagramTab === "FLOW"
-                  ? "bg-slate-900 text-white shadow-xs"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  ? "bg-slate-900 dark:bg-indigo-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
-              <Layers className={`h-3.5 w-3.5 ${activeDiagramTab === "FLOW" ? "text-blue-400" : "text-slate-400"}`} />
+              <Layers className={`h-3.5 w-3.5 ${activeDiagramTab === "FLOW" ? "text-blue-400 dark:text-white" : "text-slate-400"}`} />
               <span>Routing Architecture</span>
             </button>
           </div>
 
-          <div className="flex items-center gap-2 px-2 text-[11px] font-mono text-slate-400 hidden md:flex">
+          <div className="flex items-center gap-2 px-2 text-[11px] font-mono text-slate-400 dark:text-slate-500 hidden md:flex">
             <span>Chronometer Synchronized</span>
             <span>•</span>
-            <span className="text-indigo-600 font-bold">{simulatedDate}</span>
+            <span className="text-indigo-600 dark:text-indigo-400 font-bold">{simulatedDate}</span>
           </div>
         </div>
 
@@ -454,29 +454,29 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
       </div>
 
       {/* Input Mode Selector & Forms */}
-      <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 to-slate-50/60 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
+      <div className="overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 to-slate-50/60 dark:from-[#0B1120]/90 dark:to-[#070A13]/90 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl">
         {/* Mode Tabs */}
-        <div className="flex border-b border-slate-200/80 bg-slate-50/80 p-2 gap-2">
+        <div className="flex border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/70 p-2 gap-2">
           <button
             onClick={() => setActiveTab("AUDIT")}
             className={`flex flex-1 items-center justify-center gap-2 rounded-2xl py-2.5 text-xs font-bold transition-all shadow-2xs ${
               activeTab === "AUDIT"
-                ? "bg-white text-slate-900 shadow-xs border border-slate-200/80 ring-1 ring-slate-900/5"
-                : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
+                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs border border-slate-200/80 dark:border-slate-700 ring-1 ring-slate-900/5"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-850/50"
             }`}
           >
-            <FileText className={`h-4 w-4 ${activeTab === "AUDIT" ? "text-blue-600" : "text-slate-400"}`} />
+            <FileText className={`h-4 w-4 ${activeTab === "AUDIT" ? "text-blue-600 dark:text-blue-400" : "text-slate-400"}`} />
             <span>Audit Existing AI Text</span>
           </button>
           <button
             onClick={() => setActiveTab("GENERATE")}
             className={`flex flex-1 items-center justify-center gap-2 rounded-2xl py-2.5 text-xs font-bold transition-all shadow-2xs ${
               activeTab === "GENERATE"
-                ? "bg-white text-slate-900 shadow-xs border border-slate-200/80 ring-1 ring-slate-900/5"
-                : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
+                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs border border-slate-200/80 dark:border-slate-700 ring-1 ring-slate-900/5"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-850/50"
             }`}
           >
-            <Terminal className={`h-4 w-4 ${activeTab === "GENERATE" ? "text-emerald-600" : "text-slate-400"}`} />
+            <Terminal className={`h-4 w-4 ${activeTab === "GENERATE" ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"}`} />
             <span>Live Bifrost Prompt Test</span>
           </button>
         </div>
@@ -485,10 +485,10 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
         {activeTab === "AUDIT" && (
           <form onSubmit={handleRunAudit} className="p-5 sm:p-6">
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 AI Answer Text to Audit:
               </label>
-              <span className="font-mono text-[11px] text-slate-400">
+              <span className="font-mono text-[11px] text-slate-400 dark:text-slate-500">
                 Decomposes into atomic claims via Bifrost Gateway
               </span>
             </div>
@@ -498,18 +498,18 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
               value={auditInputText}
               onChange={(e) => setAuditInputText(e.target.value)}
               placeholder="Paste any LLM answer containing code, endpoints, pricing, leadership, or regulatory claims..."
-              className="w-full rounded-2xl border border-slate-200/90 bg-white/95 p-3.5 font-mono text-xs text-slate-800 placeholder-slate-400 shadow-inner focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
+              className="w-full rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-950/80 p-3.5 font-mono text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 shadow-inner focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
             />
 
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-              <span className="text-[11px] text-slate-500 font-medium">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                 Pipeline: Bifrost (groq/gpt-oss-20b) → Tavily Live Search → Bifrost (groq/gpt-oss-120b)
               </span>
 
               <button
                 type="submit"
                 disabled={isSubmitting || !auditInputText.trim()}
-                className="flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 font-mono text-xs font-bold text-white shadow-xs hover:bg-slate-800 disabled:opacity-50 transition active:scale-95"
+                className="flex items-center gap-2 rounded-xl bg-slate-900 dark:bg-indigo-600 px-4 py-2.5 font-mono text-xs font-bold text-white shadow-xs hover:bg-slate-800 dark:hover:bg-indigo-500 disabled:opacity-50 transition active:scale-95"
               >
                 <Activity className={`h-3.5 w-3.5 text-emerald-400 ${isSubmitting ? "animate-spin" : ""}`} />
                 <span>{isSubmitting ? "Decomposing & Grounding..." : "Execute Temporal Audit"}</span>
@@ -523,7 +523,7 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
           <form onSubmit={handleRunGenerate} className="p-5 sm:p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="md:col-span-2">
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                   Prompt for LLM Generation:
                 </label>
                 <input
@@ -531,18 +531,18 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                   value={promptInput}
                   onChange={(e) => setPromptInput(e.target.value)}
                   placeholder="e.g., Provide code for OpenAI Assistants API document retrieval"
-                  className="w-full rounded-2xl border border-slate-200/90 bg-white/95 px-3.5 py-2.5 font-mono text-xs text-slate-800 shadow-inner focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
+                  className="w-full rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-950/80 px-3.5 py-2.5 font-mono text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 shadow-inner focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                   Bifrost Model:
                 </label>
                 <select
                   value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200/90 bg-white/95 px-3 py-2.5 font-mono text-xs text-slate-800 shadow-inner focus:border-emerald-500 focus:outline-none transition"
+                  className="w-full rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-950/80 px-3 py-2.5 font-mono text-xs text-slate-800 dark:text-slate-100 shadow-inner focus:border-emerald-500 focus:outline-none transition"
                 >
                   <option value="groq/openai/gpt-oss-20b">groq/openai/gpt-oss-20b (Fast Decomposer)</option>
                   <option value="groq/openai/gpt-oss-120b">groq/openai/gpt-oss-120b (High-Reasoning)</option>
@@ -551,7 +551,7 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-              <span className="text-[11px] text-slate-500 font-medium">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                 Routes request via @maximhq/bifrost, streams response, and initiates instant temporal adjudication.
               </span>
 
@@ -572,18 +572,18 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Interactive Highlighted Text & Auto-Heal Viewer */}
         <div className="lg:col-span-8 flex flex-col gap-4">
-          <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
+          <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 to-slate-50/70 dark:from-[#0B1120]/90 dark:to-[#070A13]/90 p-5 sm:p-6 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl">
             {/* Viewer Header */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3.5">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60">
                   <Code2 className="h-4 w-4" />
                 </div>
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
                     {currentAudit.title || "Audit Report"}
                   </span>
-                  <div className="flex items-center gap-2 font-mono text-[10px] text-slate-400">
+                  <div className="flex items-center gap-2 font-mono text-[10px] text-slate-400 dark:text-slate-500">
                     <span>{dynamicClaims.length} Claims Evaluated</span>
                     <span>•</span>
                     <span>Tavily Grounded</span>
@@ -595,10 +595,10 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleExportReport}
-                  className="flex items-center gap-1.5 rounded-xl border border-slate-200/90 bg-white px-3 py-1.5 font-mono text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 transition active:scale-95"
+                  className="flex items-center gap-1.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 font-mono text-xs font-bold text-slate-700 dark:text-slate-300 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 transition active:scale-95"
                   title="Export Forensic Compliance Report JSON"
                 >
-                  {copiedExport ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Download className="h-3.5 w-3.5 text-slate-500" />}
+                  {copiedExport ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> : <Download className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />}
                   <span>{copiedExport ? "JSON Copied!" : "Export JSON"}</span>
                 </button>
 
@@ -606,18 +606,18 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                   onClick={() => setShowAutoHealDiff(!showAutoHealDiff)}
                   className={`flex items-center gap-2 rounded-xl border px-3.5 py-1.5 text-xs font-bold transition shadow-2xs active:scale-95 ${
                     showAutoHealDiff
-                      ? "border-emerald-500 bg-emerald-50 text-emerald-900 shadow-xs ring-1 ring-emerald-500/20"
-                      : "border-slate-200/80 bg-white text-slate-700 hover:bg-slate-50"
+                      ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-300 shadow-xs ring-1 ring-emerald-500/20"
+                      : "border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                   }`}
                 >
-                  <Zap className={`h-3.5 w-3.5 ${showAutoHealDiff ? "text-emerald-600" : "text-amber-500"}`} />
+                  <Zap className={`h-3.5 w-3.5 ${showAutoHealDiff ? "text-emerald-600 dark:text-emerald-400" : "text-amber-500 dark:text-amber-400"}`} />
                   <span>{showAutoHealDiff ? "Viewing Auto-Healed" : "Toggle Auto-Heal Diff"}</span>
                 </button>
 
                 {showAutoHealDiff && (
                   <button
                     onClick={handleCopyPatchedText}
-                    className="flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-600 px-3 py-1.5 font-mono text-xs font-bold text-white shadow-xs hover:bg-emerald-700 transition active:scale-95"
+                    className="flex items-center gap-1.5 rounded-xl border border-emerald-300 dark:border-emerald-700 bg-emerald-600 px-3 py-1.5 font-mono text-xs font-bold text-white shadow-xs hover:bg-emerald-700 transition active:scale-95"
                   >
                     {copiedFix ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                     <span>{copiedFix ? "Copied!" : "Copy Patched"}</span>
@@ -630,16 +630,16 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
             <div className="mt-4">
               {showAutoHealDiff ? (
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between text-xs font-mono font-medium text-slate-500">
-                    <span className="inline-flex items-center gap-1 text-emerald-700 font-bold">
+                  <div className="flex items-center justify-between text-xs font-mono font-medium text-slate-500 dark:text-slate-400">
+                    <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-bold">
                       <ShieldCheck className="h-3.5 w-3.5" />
                       Auto-Healed Verified Code (Drop-in Replacement):
                     </span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500">
                       Zero-touch temporal rejuvenation
                     </span>
                   </div>
-                  <pre className="overflow-x-auto rounded-2xl border border-emerald-200/80 bg-gradient-to-b from-emerald-50/40 to-white p-4 font-mono text-xs text-slate-900 leading-relaxed shadow-inner">
+                  <pre className="overflow-x-auto rounded-2xl border border-emerald-200/80 dark:border-emerald-800/60 bg-gradient-to-b from-emerald-50/40 to-white dark:from-slate-950 dark:to-[#071710] p-4 font-mono text-xs text-slate-900 dark:text-emerald-300 leading-relaxed shadow-inner">
                     <code>{currentAudit.patchedText}</code>
                   </pre>
                 </div>
@@ -672,19 +672,19 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
           />
 
           {/* Temporal Decay Explainer Card */}
-          <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 to-slate-50/70 p-5 shadow-sm shadow-slate-200/50 backdrop-blur-xl text-xs space-y-3">
-            <div className="flex items-center gap-2.5 font-bold text-slate-800 uppercase tracking-wider text-[11px]">
-              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
+          <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 to-slate-50/70 dark:from-[#0B1120]/90 dark:to-[#070A13]/90 p-5 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl text-xs space-y-3">
+            <div className="flex items-center gap-2.5 font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[11px]">
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/60">
                 <Clock className="h-3.5 w-3.5" />
               </div>
               <span>Temporal Entropy Physics</span>
             </div>
-            <p className="text-slate-600 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
               AI facts decay exponentially. The <strong>HALF-LIFE</strong> engine calculates rate card changes, API sunset events, executive shifts, and regulatory updates using live Tavily search indices, while saving latency and costs on static laws via <em>Search-Skip Optimization</em>.
             </p>
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
               <span>Bifrost Gateway:</span>
-              <span className="font-bold text-indigo-600">Active Multi-Route</span>
+              <span className="font-bold text-indigo-600 dark:text-indigo-400">Active Multi-Route</span>
             </div>
           </div>
         </div>
@@ -694,30 +694,30 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
       <div className="flex flex-col gap-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
               Atomic Claims & Forensic Evidence
             </h3>
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 font-mono text-[10px] font-semibold text-slate-600">
+            <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-mono text-[10px] font-semibold text-slate-600 dark:text-slate-300">
               {filteredClaims.length} of {dynamicClaims.length} Exhibits
             </span>
           </div>
 
-          <span className="font-mono text-xs text-slate-400 hidden sm:inline">
+          <span className="font-mono text-xs text-slate-400 dark:text-slate-500 hidden sm:inline">
             Click any exhibit card to inspect ground-truth sources in modal
           </span>
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-slate-200/80 bg-white/90 p-2.5 shadow-2xs backdrop-blur-md">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-2.5 shadow-2xs backdrop-blur-md">
           {/* Search Box */}
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search claims, reasoning, or consensus..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-8 pr-3 py-1.5 font-mono text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-slate-50/70 dark:bg-slate-950/70 pl-8 pr-3 py-1.5 font-mono text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-950 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
           </div>
 
@@ -729,8 +729,8 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                 onClick={() => setSelectedCategoryFilter(cat)}
                 className={`rounded-lg px-2 py-1 transition ${
                   selectedCategoryFilter === cat
-                    ? "bg-slate-900 text-white shadow-2xs"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-slate-900 dark:bg-indigo-600 text-white shadow-2xs"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
                 {cat}
@@ -739,7 +739,7 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
           </div>
 
           {/* Status Filter Chips */}
-          <div className="flex items-center gap-1 text-[10px] font-mono font-bold border-l border-slate-200 pl-2">
+          <div className="flex items-center gap-1 text-[10px] font-mono font-bold border-l border-slate-200 dark:border-slate-800 pl-2">
             {[
               { id: "ALL", label: "All Status" },
               { id: "FRESH", label: "Fresh" },
@@ -752,7 +752,7 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                 className={`rounded-lg px-2 py-1 transition ${
                   selectedStatusFilter === st.id
                     ? "bg-indigo-600 text-white shadow-2xs"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
                 {st.label}
@@ -763,7 +763,7 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
 
         {/* Claims Cards */}
         {filteredClaims.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 font-mono text-xs">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 text-center text-slate-500 dark:text-slate-400 font-mono text-xs">
             No claims match your search or filter criteria.
           </div>
         ) : (
@@ -779,30 +779,30 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
               const isRegulation = claim.category === "REGULATION";
 
               const accentBorder = isApi
-                ? "border-l-blue-500 hover:border-blue-300"
+                ? "border-l-blue-500 hover:border-blue-300 dark:hover:border-blue-400"
                 : isPricing
-                ? "border-l-amber-500 hover:border-amber-300"
+                ? "border-l-amber-500 hover:border-amber-300 dark:hover:border-amber-400"
                 : isLeadership
-                ? "border-l-purple-500 hover:border-purple-300"
+                ? "border-l-purple-500 hover:border-purple-300 dark:hover:border-purple-400"
                 : isRegulation
-                ? "border-l-pink-500 hover:border-pink-300"
-                : "border-l-emerald-500 hover:border-emerald-300";
+                ? "border-l-pink-500 hover:border-pink-300 dark:hover:border-pink-400"
+                : "border-l-emerald-500 hover:border-emerald-300 dark:hover:border-emerald-400";
 
               const cardBg = isApi
-                ? "bg-gradient-to-b from-blue-50/40 via-white to-slate-50/60"
+                ? "bg-gradient-to-b from-blue-50/40 via-white to-slate-50/60 dark:from-blue-950/20 dark:via-[#0D1527] dark:to-[#080D1A]"
                 : isPricing
-                ? "bg-gradient-to-b from-amber-50/40 via-white to-slate-50/60"
+                ? "bg-gradient-to-b from-amber-50/40 via-white to-slate-50/60 dark:from-amber-950/20 dark:via-[#0D1527] dark:to-[#080D1A]"
                 : isLeadership
-                ? "bg-gradient-to-b from-purple-50/40 via-white to-slate-50/60"
+                ? "bg-gradient-to-b from-purple-50/40 via-white to-slate-50/60 dark:from-purple-950/20 dark:via-[#0D1527] dark:to-[#080D1A]"
                 : isRegulation
-                ? "bg-gradient-to-b from-pink-50/40 via-white to-slate-50/60"
-                : "bg-gradient-to-b from-emerald-50/40 via-white to-slate-50/60";
+                ? "bg-gradient-to-b from-pink-50/40 via-white to-slate-50/60 dark:from-rose-950/20 dark:via-[#0D1527] dark:to-[#080D1A]"
+                : "bg-gradient-to-b from-emerald-50/40 via-white to-slate-50/60 dark:from-emerald-950/20 dark:via-[#0D1527] dark:to-[#080D1A]";
 
               return (
                 <Link
                   key={claim.id}
                   href={`/audit/${currentAudit.id}/claim/${claim.id}`}
-                  className={`group relative flex flex-col justify-between rounded-3xl border border-slate-200/80 border-l-[5px] ${accentBorder} ${cardBg} p-5 shadow-2xs hover:shadow-md transition-all backdrop-blur-xl active:scale-[0.99]`}
+                  className={`group relative flex flex-col justify-between rounded-3xl border border-slate-200/80 dark:border-slate-800/80 border-l-[5px] ${accentBorder} ${cardBg} p-5 shadow-2xs hover:shadow-md dark:hover:shadow-black/60 transition-all backdrop-blur-xl active:scale-[0.99]`}
                 >
                   <div className="space-y-3">
                     {/* Card Header */}
@@ -830,25 +830,25 @@ export function InteractiveAuditWorkspace({ initialAudit }: InteractiveAuditWork
                     </div>
 
                     {/* Assertion Snippet */}
-                    <div className="font-mono text-xs text-slate-800 line-clamp-3 leading-relaxed font-medium">
+                    <div className="font-mono text-xs text-slate-800 dark:text-slate-200 line-clamp-3 leading-relaxed font-medium">
                       &ldquo;{claim.originalSpan}&rdquo;
                     </div>
 
                     {/* Ground Truth Summary */}
-                    <div className="rounded-xl border border-slate-200/70 bg-white/80 p-3 text-[11px] text-slate-600 line-clamp-2 shadow-2xs">
-                      <span className="font-bold text-slate-800">Consensus: </span>
+                    <div className="rounded-xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-950/70 p-3 text-[11px] text-slate-600 dark:text-slate-300 line-clamp-2 shadow-2xs">
+                      <span className="font-bold text-slate-800 dark:text-slate-100">Consensus: </span>
                       {claim.liveTruth}
                     </div>
                   </div>
 
                   {/* Footer Metadata */}
-                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[11px]">
-                    <div className="flex items-center gap-1 font-mono text-slate-400">
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-3 text-[11px]">
+                    <div className="flex items-center gap-1 font-mono text-slate-400 dark:text-slate-500">
                       <Clock className="h-3 w-3" />
                       <span>t½: {claim.halfLifeDays >= 99999 ? "Static / ∞" : `${claim.halfLifeDays}d`}</span>
                     </div>
 
-                    <div className="flex items-center gap-1 font-bold text-indigo-600 group-hover:translate-x-0.5 transition-transform">
+                    <div className="flex items-center gap-1 font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-0.5 transition-transform">
                       <span>Inspect Evidence</span>
                       <ArrowRight className="h-3 w-3" />
                     </div>
@@ -883,15 +883,15 @@ function HighlightedClaimsText({
         return (
           <div
             key={claim.id || idx}
-            className="flex flex-col gap-2 rounded-2xl border border-slate-200/80 bg-white/95 p-3.5 shadow-2xs hover:border-slate-300 transition"
+            className="flex flex-col gap-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 p-3.5 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition"
           >
             <div className="flex items-center justify-between text-[11px]">
-              <span className="font-mono font-bold text-slate-600">
-                Claim #{claim.claimIndex + 1} • <span className="text-indigo-600 font-semibold">{claim.category}</span>
+              <span className="font-mono font-bold text-slate-600 dark:text-slate-300">
+                Claim #{claim.claimIndex + 1} • <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{claim.category}</span>
               </span>
               <Link
                 href={`/audit/${auditId}/claim/${claim.id}`}
-                className="flex items-center gap-1 font-mono font-bold text-indigo-600 hover:text-indigo-800 hover:underline"
+                className="flex items-center gap-1 font-mono font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline"
               >
                 <span>Evidence Modal</span>
                 <ArrowRight className="h-3 w-3" />
@@ -902,22 +902,22 @@ function HighlightedClaimsText({
               href={`/audit/${auditId}/claim/${claim.id}`}
               className={`block rounded-xl p-3 font-mono text-xs border transition ${
                 claim.dynamicScore >= 80
-                  ? "bg-emerald-50/60 border-emerald-200 text-emerald-950 hover:bg-emerald-100/70"
+                  ? "bg-emerald-50/60 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800/60 text-emerald-950 dark:text-emerald-300 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/50"
                   : claim.dynamicScore >= 45
-                  ? "bg-amber-50/60 border-amber-200 text-amber-950 hover:bg-amber-100/70"
-                  : "bg-rose-50/60 border-rose-200 text-rose-950 hover:bg-rose-100/70"
+                  ? "bg-amber-50/60 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800/60 text-amber-950 dark:text-amber-300 hover:bg-amber-100/70 dark:hover:bg-amber-900/50"
+                  : "bg-rose-50/60 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800/60 text-rose-950 dark:text-rose-300 hover:bg-rose-100/70 dark:hover:bg-rose-900/50"
               }`}
             >
               {claim.originalSpan}
             </Link>
 
-            <div className="flex items-center justify-between text-[10px] text-slate-500">
+            <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
               <span>
                 {claim.expiredAtDate === "NEVER"
                   ? "Timeless Invariant (No Expiry)"
                   : `Expired: ${claim.expiredAtDate}`}
               </span>
-              <span className="font-mono font-bold text-slate-700">
+              <span className="font-mono font-bold text-slate-700 dark:text-slate-200">
                 Score: {claim.dynamicScore}%
               </span>
             </div>

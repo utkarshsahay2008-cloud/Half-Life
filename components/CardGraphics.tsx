@@ -62,7 +62,7 @@ export function CircuitSplinesPattern({ className = "" }: { className?: string }
 export function RulerTicksPattern({ className = "" }: { className?: string }) {
   return (
     <svg
-      className={`pointer-events-none absolute inset-x-0 bottom-0 h-4 w-full opacity-[0.07] select-none ${className}`}
+      className={`pointer-events-none absolute inset-x-0 bottom-0 h-4 w-full text-slate-900 dark:text-slate-100 opacity-[0.08] dark:opacity-[0.20] select-none ${className}`}
       preserveAspectRatio="none"
       viewBox="0 0 600 20"
       fill="none"
@@ -78,7 +78,7 @@ export function RulerTicksPattern({ className = "" }: { className?: string }) {
             y1={isMajor ? 0 : 8}
             x2={x}
             y2={20}
-            stroke="#0F172A"
+            stroke="currentColor"
             strokeWidth={isMajor ? 1.5 : 1}
           />
         );

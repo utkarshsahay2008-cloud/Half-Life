@@ -34,17 +34,17 @@ export function FreshnessGauge({
   }
 
   return (
-    <div className="flex flex-col items-center justify-between rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
-      <div className="w-full flex items-center justify-between border-b border-slate-100 pb-3.5">
+    <div className="flex flex-col items-center justify-between rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 to-slate-50/70 dark:from-[#0B1120]/90 dark:to-[#070A13]/90 p-5 sm:p-6 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl">
+      <div className="w-full flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-3.5">
         <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
             <Gauge className="h-3.5 w-3.5" />
           </div>
-          <span className="text-xs font-bold tracking-wider uppercase text-slate-800">
+          <span className="text-xs font-bold tracking-wider uppercase text-slate-800 dark:text-slate-200">
             Factual Freshness Index
           </span>
         </div>
-        <div className="flex items-center gap-1 font-mono text-[11px] text-slate-500 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-200/60">
+        <div className="flex items-center gap-1 font-mono text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-lg border border-slate-200/60 dark:border-slate-800">
           <Clock className="h-3 w-3 text-slate-400" />
           <span>{simulatedDate}</span>
         </div>
@@ -76,6 +76,7 @@ export function FreshnessGauge({
             stroke="#F1F5F9"
             strokeWidth="12"
             fill="transparent"
+            className="stroke-slate-100 dark:stroke-slate-800/80"
           />
           {/* Active progress track */}
           <circle
@@ -95,7 +96,7 @@ export function FreshnessGauge({
         {/* Center score readout */}
         <div className="absolute flex flex-col items-center justify-center text-center">
           <div className="flex items-center gap-0.5">
-            <span className="font-mono text-4xl font-black tracking-tight text-slate-900">
+            <span className="font-mono text-4xl font-black tracking-tight text-slate-900 dark:text-white">
               {score}
             </span>
             <span className="text-xl font-bold text-slate-400">%</span>
@@ -103,38 +104,38 @@ export function FreshnessGauge({
           <span
             className={`mt-1 inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wide uppercase shadow-2xs ${badge.badgeClass}`}
           >
-            {score >= 80 && <ShieldCheck className="h-3 w-3 text-emerald-600" />}
-            {score >= 45 && score < 80 && <AlertTriangle className="h-3 w-3 text-amber-600" />}
-            {score < 45 && <AlertCircle className="h-3 w-3 text-rose-600" />}
+            {score >= 80 && <ShieldCheck className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />}
+            {score >= 45 && score < 80 && <AlertTriangle className="h-3 w-3 text-amber-600 dark:text-amber-400" />}
+            {score < 45 && <AlertCircle className="h-3 w-3 text-rose-600 dark:text-rose-400" />}
             {badge.label}
           </span>
         </div>
       </div>
 
       {/* Claim Breakdown Stats */}
-      <div className="grid w-full grid-cols-3 gap-2 border-t border-slate-100 pt-3.5 text-center">
-        <div className="rounded-2xl bg-gradient-to-b from-emerald-50/70 to-white p-2.5 border border-emerald-100/90 shadow-2xs">
-          <span className="block font-mono text-base font-bold text-emerald-700">{freshCount}</span>
-          <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Fresh</span>
+      <div className="grid w-full grid-cols-3 gap-2 border-t border-slate-100 dark:border-slate-800/80 pt-3.5 text-center">
+        <div className="rounded-2xl bg-gradient-to-b from-emerald-50/70 to-white dark:from-emerald-950/30 dark:to-slate-900 p-2.5 border border-emerald-100/90 dark:border-emerald-900/40 shadow-2xs">
+          <span className="block font-mono text-base font-bold text-emerald-700 dark:text-emerald-400">{freshCount}</span>
+          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Fresh</span>
         </div>
-        <div className="rounded-2xl bg-gradient-to-b from-amber-50/70 to-white p-2.5 border border-amber-100/90 shadow-2xs">
-          <span className="block font-mono text-base font-bold text-amber-700">{decayingCount}</span>
-          <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Decaying</span>
+        <div className="rounded-2xl bg-gradient-to-b from-amber-50/70 to-white dark:from-amber-950/30 dark:to-slate-900 p-2.5 border border-amber-100/90 dark:border-amber-900/40 shadow-2xs">
+          <span className="block font-mono text-base font-bold text-amber-700 dark:text-amber-400">{decayingCount}</span>
+          <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Decaying</span>
         </div>
-        <div className="rounded-2xl bg-gradient-to-b from-rose-50/70 to-white p-2.5 border border-rose-100/90 shadow-2xs">
-          <span className="block font-mono text-base font-bold text-rose-700">{staleCount}</span>
-          <span className="text-[10px] font-bold text-rose-600 uppercase tracking-wider">Stale</span>
+        <div className="rounded-2xl bg-gradient-to-b from-rose-50/70 to-white dark:from-rose-950/30 dark:to-slate-900 p-2.5 border border-rose-100/90 dark:border-rose-900/40 shadow-2xs">
+          <span className="block font-mono text-base font-bold text-rose-700 dark:text-rose-400">{staleCount}</span>
+          <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">Stale</span>
         </div>
       </div>
 
       {/* Search-Skip Optimization Badge */}
       {searchSkipSavingsMs > 0 && (
-        <div className="mt-3.5 flex w-full items-center justify-between rounded-2xl border border-teal-200/80 bg-gradient-to-r from-teal-50/70 via-emerald-50/40 to-white px-3 py-2 shadow-2xs">
+        <div className="mt-3.5 flex w-full items-center justify-between rounded-2xl border border-teal-200/80 dark:border-teal-900/50 bg-gradient-to-r from-teal-50/70 via-emerald-50/40 to-white dark:from-teal-950/40 dark:via-emerald-950/20 dark:to-slate-900 px-3 py-2 shadow-2xs">
           <div className="flex items-center gap-1.5">
-            <Zap className="h-3.5 w-3.5 text-teal-600" />
-            <span className="text-[11px] font-bold text-teal-950">Search-Skip Optimizer:</span>
+            <Zap className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
+            <span className="text-[11px] font-bold text-teal-950 dark:text-teal-200">Search-Skip Optimizer:</span>
           </div>
-          <span className="rounded-md bg-teal-100/80 px-2 py-0.5 font-mono text-[10px] font-bold text-teal-900 border border-teal-200/70">
+          <span className="rounded-md bg-teal-100/80 dark:bg-teal-900/50 px-2 py-0.5 font-mono text-[10px] font-bold text-teal-900 dark:text-teal-200 border border-teal-200/70 dark:border-teal-800/60">
             +{searchSkipSavingsMs}ms Saved
           </span>
         </div>

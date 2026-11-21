@@ -95,29 +95,29 @@ export function PipelineArchitectureFlow() {
   const [selectedStage, setSelectedStage] = useState<StageInfo>(STAGES[1]); // Default to Bifrost Extraction
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 dark:from-[#0B1120]/90 dark:via-[#0D1527]/80 dark:to-[#070A13]/90 p-5 sm:p-6 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 text-blue-700 border border-blue-200/80 shadow-2xs">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/60 dark:to-indigo-950/60 text-blue-700 dark:text-blue-400 border border-blue-200/80 dark:border-blue-800/60 shadow-2xs">
             <Layers className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
                 Bifrost & Tavily Routing Architecture Flow
               </h3>
-              <span className="font-mono text-[10px] font-bold text-blue-700 bg-blue-50/80 border border-blue-200/70 rounded-full px-2.5 py-0.5 shadow-2xs">
+              <span className="font-mono text-[10px] font-bold text-blue-700 dark:text-blue-300 bg-blue-50/80 dark:bg-blue-950/60 border border-blue-200/70 dark:border-blue-800/60 rounded-full px-2.5 py-0.5 shadow-2xs">
                 5-Stage Pipeline
               </span>
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
               Interactive execution topology mapping multi-model routing, Search-Skip branching, and live adjudication.
             </p>
           </div>
         </div>
 
-        <span className="text-[11px] text-slate-400 font-medium">
+        <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
           Click any stage node to inspect parameters & payload
         </span>
       </div>
@@ -132,8 +132,8 @@ export function PipelineArchitectureFlow() {
               onClick={() => setSelectedStage(st)}
               className={`group relative flex flex-col justify-between rounded-2xl border p-3 text-left transition-all active:scale-[0.99] ${
                 isSelected
-                  ? "border-indigo-500 bg-gradient-to-b from-indigo-50/80 to-white shadow-xs ring-2 ring-indigo-500/20"
-                  : "border-slate-200/80 bg-white/80 hover:border-slate-300 hover:bg-slate-50/70"
+                  ? "border-indigo-500 bg-gradient-to-b from-indigo-50/80 to-white dark:from-indigo-950/50 dark:to-slate-900 shadow-xs ring-2 ring-indigo-500/20"
+                  : "border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/70 dark:hover:bg-slate-850/80"
               }`}
             >
               <div className="space-y-1.5">
@@ -146,21 +146,21 @@ export function PipelineArchitectureFlow() {
                   </span>
                   <span
                     className={`h-2 w-2 rounded-full transition-all ${
-                      isSelected ? "bg-indigo-600 animate-pulse ring-2 ring-indigo-200" : "bg-slate-300"
+                      isSelected ? "bg-indigo-600 animate-pulse ring-2 ring-indigo-200 dark:ring-indigo-900" : "bg-slate-300 dark:bg-slate-700"
                     }`}
                   />
                 </div>
-                <h4 className="font-bold text-xs text-slate-900 group-hover:text-indigo-950 transition-colors line-clamp-1">
+                <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100 group-hover:text-indigo-950 dark:group-hover:text-indigo-300 transition-colors line-clamp-1">
                   {st.title}
                 </h4>
-                <p className="text-[10px] text-slate-500 line-clamp-1">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1">
                   {st.subtitle}
                 </p>
               </div>
 
-              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[9px] font-mono text-slate-400">
+              <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[9px] font-mono text-slate-400 dark:text-slate-500">
                 <span className="truncate max-w-[85px]">{st.model.split("/").pop()}</span>
-                <span className="font-bold text-indigo-600">{st.latency}</span>
+                <span className="font-bold text-indigo-600 dark:text-indigo-400">{st.latency}</span>
               </div>
             </button>
           );
@@ -168,7 +168,7 @@ export function PipelineArchitectureFlow() {
       </div>
 
       {/* Stage Inspection Detail Drawer */}
-      <div className="mt-4 rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/50 via-white to-slate-50/60 p-4 shadow-2xs">
+      <div className="mt-4 rounded-2xl border border-indigo-100 dark:border-slate-800 bg-gradient-to-r from-indigo-50/50 via-white to-slate-50/60 dark:from-slate-900/90 dark:via-[#0D1527] dark:to-[#070A13] p-4 shadow-2xs">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
           <div className="lg:col-span-7 space-y-2">
             <div className="flex items-center gap-2">
@@ -178,23 +178,23 @@ export function PipelineArchitectureFlow() {
               >
                 {selectedStage.stageNumber}
               </span>
-              <h4 className="font-bold text-sm text-slate-900">{selectedStage.title}</h4>
-              <span className="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200">
+              <h4 className="font-bold text-sm text-slate-900 dark:text-white">{selectedStage.title}</h4>
+              <span className="font-mono text-[10px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-2 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-800/60">
                 {selectedStage.model}
               </span>
             </div>
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               {selectedStage.description}
             </p>
-            <div className="flex items-center gap-4 text-[11px] font-mono text-slate-500 pt-1">
-              <span>Latency: <strong className="text-slate-800">{selectedStage.latency}</strong></span>
+            <div className="flex items-center gap-4 text-[11px] font-mono text-slate-500 dark:text-slate-400 pt-1">
+              <span>Latency: <strong className="text-slate-800 dark:text-slate-200">{selectedStage.latency}</strong></span>
               <span>•</span>
-              <span>Resource Footprint: <strong className="text-slate-800">{selectedStage.tokens}</strong></span>
+              <span>Resource Footprint: <strong className="text-slate-800 dark:text-slate-200">{selectedStage.tokens}</strong></span>
             </div>
           </div>
 
           <div className="lg:col-span-5">
-            <div className="rounded-xl border border-slate-200/90 bg-slate-900 p-3 shadow-inner">
+            <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-900 dark:bg-slate-950 p-3 shadow-inner">
               <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-1 border-b border-slate-800 pb-1">
                 <span>Stage Output Sample</span>
                 <span className="text-emerald-400">Live Schema</span>

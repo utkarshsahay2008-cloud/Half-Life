@@ -146,37 +146,37 @@ export function KnowledgeEntropyRadar({
   );
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 dark:from-[#0B1120]/90 dark:via-[#0D1527]/80 dark:to-[#070A13]/90 p-5 sm:p-6 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-700 border border-indigo-200/80 shadow-2xs">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/60 dark:to-purple-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800/60 shadow-2xs">
             <Compass className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
                 Multi-Axis Knowledge Entropy Radar
               </h3>
-              <span className="font-mono text-[10px] font-bold text-purple-700 bg-purple-50/80 border border-purple-200/70 rounded-full px-2.5 py-0.5 shadow-2xs">
+              <span className="font-mono text-[10px] font-bold text-purple-700 dark:text-purple-300 bg-purple-50/80 dark:bg-purple-950/60 border border-purple-200/70 dark:border-purple-800/60 rounded-full px-2.5 py-0.5 shadow-2xs">
                 5-Vector Topology
               </span>
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
               Evaluates multi-dimensional factual stability across time, APIs, pricing, governance, and static laws.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="text-slate-400 font-medium">Composite Integrity:</span>
+          <span className="text-slate-400 dark:text-slate-500 font-medium">Composite Integrity:</span>
           <span
             className={`rounded-xl px-2.5 py-0.5 font-bold shadow-xs border ${
               avgHealth >= 80
-                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60"
                 : avgHealth >= 50
-                ? "bg-amber-50 text-amber-800 border-amber-200"
-                : "bg-rose-50 text-rose-800 border-rose-200"
+                ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/60"
+                : "bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800/60"
             }`}
           >
             {avgHealth}% Health
@@ -216,11 +216,12 @@ export function KnowledgeEntropyRadar({
                       stroke="#E2E8F0"
                       strokeWidth={level === 1.0 ? "1.5" : "1"}
                       strokeDasharray={level === 1.0 ? "" : "3 3"}
+                      className="stroke-slate-200 dark:stroke-slate-800/80"
                     />
                     <text
                       x={cx + 4}
                       y={cy - r + 9}
-                      className="fill-slate-400 font-mono text-[8px] font-semibold"
+                      className="fill-slate-400 dark:fill-slate-500 font-mono text-[8px] font-semibold"
                     >
                       {Math.round(level * 100)}%
                     </text>
@@ -241,6 +242,7 @@ export function KnowledgeEntropyRadar({
                     y2={edgeY}
                     stroke="#CBD5E1"
                     strokeWidth="1.2"
+                    className="stroke-slate-300 dark:stroke-slate-700"
                   />
                 );
               })}
@@ -303,7 +305,7 @@ export function KnowledgeEntropyRadar({
                     x={lx}
                     y={ly}
                     textAnchor={textAnchor}
-                    className="fill-slate-700 font-mono text-[9px] font-bold"
+                    className="fill-slate-700 dark:fill-slate-300 font-mono text-[9px] font-bold"
                   >
                     {dim.label.split(" ")[0]} ({dim.score}%)
                   </text>
@@ -311,7 +313,7 @@ export function KnowledgeEntropyRadar({
               })}
             </svg>
           </div>
-          <span className="mt-2 text-[10px] text-slate-400 font-medium">
+          <span className="mt-2 text-[10px] text-slate-400 dark:text-slate-500 font-medium">
             Polygon updates live as Chronometer travels through {simulatedDate}
           </span>
         </div>
@@ -327,8 +329,8 @@ export function KnowledgeEntropyRadar({
                 onMouseLeave={() => setHoveredDim(null)}
                 className={`flex items-center justify-between rounded-2xl border p-2.5 transition-all ${
                   isHovered
-                    ? `${dim.borderColor} bg-white shadow-xs ring-2 ring-indigo-500/10 scale-[1.01]`
-                    : "border-slate-200/80 bg-white/70 hover:bg-white"
+                    ? `${dim.borderColor} bg-white dark:bg-slate-900 shadow-xs ring-2 ring-indigo-500/10 dark:ring-indigo-500/30 scale-[1.01]`
+                    : "border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-850"
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -337,17 +339,17 @@ export function KnowledgeEntropyRadar({
                     style={{ backgroundColor: dim.color }}
                   />
                   <div>
-                    <span className="block font-bold text-xs text-slate-900">
+                    <span className="block font-bold text-xs text-slate-900 dark:text-slate-100">
                       {dim.label}
                     </span>
-                    <span className="block text-[10px] text-slate-500">
+                    <span className="block text-[10px] text-slate-500 dark:text-slate-400">
                       {dim.sublabel}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 font-mono">
-                  <div className="w-16 h-2 rounded-full bg-slate-100 overflow-hidden border border-slate-200/60 hidden sm:block">
+                  <div className="w-16 h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden border border-slate-200/60 dark:border-slate-700 hidden sm:block">
                     <div
                       className="h-full rounded-full transition-all duration-300"
                       style={{

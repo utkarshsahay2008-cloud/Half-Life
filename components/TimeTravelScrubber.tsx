@@ -73,7 +73,7 @@ export function TimeTravelScrubber({
   const isCurrentToday = currentSimulatedDate === "2026-11-20";
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 dark:from-[#0B1120]/90 dark:via-[#0D1527]/80 dark:to-[#070A13]/90 p-5 sm:p-6 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl">
       <div className="relative z-10 flex flex-col gap-4">
         {/* Header row */}
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -83,14 +83,14 @@ export function TimeTravelScrubber({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-black tracking-wider uppercase text-slate-800">
+                <span className="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">
                   Time-Travel Decay Chronometer
                 </span>
-                <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 font-mono text-[10px] font-bold text-emerald-700 border border-emerald-200/80 shadow-2xs">
+                <span className="rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 font-mono text-[10px] font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs">
                   Active Real-Time Needle
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Drag needle to travel across history and observe continuous mathematical factual decay.
               </p>
             </div>
@@ -98,18 +98,18 @@ export function TimeTravelScrubber({
 
           {/* Current Date Display & Playback Controls */}
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/60 to-white px-3.5 py-1.5 shadow-2xs">
-              <span className="text-[11px] font-medium text-slate-400">Date:</span>
-              <span className="font-mono text-sm font-black text-indigo-950 tracking-tight">
+            <div className="flex items-center gap-2 rounded-2xl border border-indigo-100 dark:border-slate-800 bg-gradient-to-r from-indigo-50/60 to-white dark:from-slate-900 dark:to-indigo-950/40 px-3.5 py-1.5 shadow-2xs">
+              <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">Date:</span>
+              <span className="font-mono text-sm font-black text-indigo-950 dark:text-indigo-200 tracking-tight">
                 {currentSimulatedDate}
               </span>
               {isCurrentToday ? (
-                <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 font-mono text-[9px] font-bold text-emerald-700 border border-emerald-200">
+                <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 font-mono text-[9px] font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   PRESENT DAY
                 </span>
               ) : (
-                <span className="rounded-md bg-amber-50 px-2 py-0.5 font-mono text-[9px] font-bold text-amber-700 border border-amber-200">
+                <span className="rounded-md bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 font-mono text-[9px] font-bold text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60">
                   PAST ERA
                 </span>
               )}
@@ -120,7 +120,7 @@ export function TimeTravelScrubber({
               className={`flex h-8 items-center gap-1.5 rounded-xl px-3.5 text-xs font-bold transition shadow-xs active:scale-95 ${
                 isPlaying
                   ? "bg-amber-500 text-white hover:bg-amber-600 shadow-amber-500/25"
-                  : "bg-slate-900 text-white hover:bg-slate-800 shadow-slate-900/20"
+                  : "bg-slate-900 dark:bg-indigo-600 text-white hover:bg-slate-800 dark:hover:bg-indigo-500 shadow-slate-900/20"
               }`}
             >
               {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
@@ -133,7 +133,7 @@ export function TimeTravelScrubber({
                 onDateChange("2023-06-01");
               }}
               title="Reset to 2023 Baseline"
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200/80 bg-white text-slate-600 shadow-2xs hover:bg-slate-50 hover:text-slate-900 transition active:scale-95"
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200 transition active:scale-95"
             >
               <RotateCcw className="h-3.5 w-3.5" />
             </button>
@@ -145,7 +145,7 @@ export function TimeTravelScrubber({
           {/* Track Container */}
           <div className="relative h-6 flex items-center">
             {/* Background Base Rail */}
-            <div className="absolute inset-x-0 h-3 rounded-full bg-slate-100 border border-slate-200/90 shadow-inner" />
+            <div className="absolute inset-x-0 h-3 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 shadow-inner" />
 
             {/* Active Vibrant Multi-Stop Gradient Fill - Perfectly Synced */}
             <div
@@ -161,8 +161,8 @@ export function TimeTravelScrubber({
                 style={{ left: `${m.percent}%`, transform: "translateX(-50%)" }}
               >
                 <div
-                  className={`w-1.5 h-5 rounded-full border border-white shadow-2xs ${
-                    sliderPercent >= m.percent ? "bg-white" : "bg-slate-300"
+                  className={`w-1.5 h-5 rounded-full border border-white dark:border-slate-800 shadow-2xs ${
+                    sliderPercent >= m.percent ? "bg-white dark:bg-slate-100" : "bg-slate-300 dark:bg-slate-700"
                   }`}
                 />
               </div>
@@ -200,12 +200,12 @@ export function TimeTravelScrubber({
                 >
                   {/* Pin Dot */}
                   <span
-                    className={`h-2.5 w-2.5 rounded-full border-2 border-white shadow-xs transition-all ${
+                    className={`h-2.5 w-2.5 rounded-full border-2 border-white dark:border-slate-900 shadow-xs transition-all ${
                       isCurrent
-                        ? "bg-indigo-600 ring-4 ring-indigo-200 scale-125"
+                        ? "bg-indigo-600 ring-4 ring-indigo-200 dark:ring-indigo-900 scale-125"
                         : isPast
                         ? "bg-emerald-500"
-                        : "bg-slate-300 group-hover:bg-slate-400"
+                        : "bg-slate-300 dark:bg-slate-700 group-hover:bg-slate-400 dark:group-hover:bg-slate-500"
                     }`}
                   />
 
@@ -214,15 +214,15 @@ export function TimeTravelScrubber({
                     <span
                       className={`font-mono text-[10px] whitespace-nowrap transition-colors ${
                         isCurrent
-                          ? "font-black text-indigo-950"
+                          ? "font-black text-indigo-950 dark:text-indigo-300"
                           : isPast
-                          ? "font-bold text-slate-800"
-                          : "font-medium text-slate-400 group-hover:text-slate-600"
+                          ? "font-bold text-slate-800 dark:text-slate-200"
+                          : "font-medium text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300"
                       }`}
                     >
                       {m.label}
                     </span>
-                    <span className="font-mono text-[8px] text-slate-400 whitespace-nowrap hidden sm:inline">
+                    <span className="font-mono text-[8px] text-slate-400 dark:text-slate-500 whitespace-nowrap hidden sm:inline">
                       {m.sublabel}
                     </span>
                   </div>

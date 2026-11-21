@@ -175,23 +175,23 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
   const simMarkerX = PADDING.left + simRatio * CHART_WIDTH;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 p-5 sm:p-6 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
+    <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white/95 via-white/85 to-slate-50/70 dark:from-[#0B1120]/90 dark:via-[#0D1527]/80 dark:to-[#070A13]/90 p-5 sm:p-6 shadow-sm shadow-slate-200/50 dark:shadow-black/50 backdrop-blur-xl">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 text-indigo-700 border border-indigo-200/80 shadow-2xs">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/60 dark:to-blue-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800/60 shadow-2xs">
             <TrendingDown className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
                 Mathematical Factual Decay Trajectories
               </h3>
-              <span className="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50/80 border border-indigo-200/70 rounded-full px-2.5 py-0.5 shadow-2xs">
+              <span className="font-mono text-[10px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/70 dark:border-indigo-800/60 rounded-full px-2.5 py-0.5 shadow-2xs">
                 N(t) = N₀ · (½)^(t / t½)
               </span>
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
               Logarithmic half-life decay trajectories across APIs, rate cards, governance, and regulatory lifecycles.
             </p>
           </div>
@@ -199,8 +199,8 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
 
         {/* Dynamic Status at current simulation date */}
         <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="text-slate-400 font-medium">Scrubber Needle:</span>
-          <span className="rounded-xl bg-gradient-to-r from-slate-900 to-indigo-950 px-3 py-1 font-bold text-white shadow-xs">
+          <span className="text-slate-400 dark:text-slate-500 font-medium">Scrubber Needle:</span>
+          <span className="rounded-xl bg-gradient-to-r from-slate-900 to-indigo-950 dark:from-indigo-600 dark:to-indigo-800 px-3 py-1 font-bold text-white shadow-xs">
             {simulatedDate}
           </span>
         </div>
@@ -212,8 +212,8 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
           onClick={() => setActiveCategoryFilter("ALL")}
           className={`px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold transition ${
             activeCategoryFilter === "ALL"
-              ? "bg-slate-900 text-white shadow-xs"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              ? "bg-slate-900 dark:bg-indigo-600 text-white shadow-xs"
+              : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
           }`}
         >
           All Vectors ({computedCurves.length})
@@ -227,7 +227,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
               className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold border transition ${
                 isSelected
                   ? `${c.style.badge} ring-2 ring-indigo-400/30 shadow-xs font-extrabold`
-                  : "border-slate-200/80 bg-white text-slate-600 hover:bg-slate-50"
+                  : "border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
               }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full ${c.style.bg}`} />
@@ -275,12 +275,13 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                   stroke="#E2E8F0"
                   strokeWidth="1"
                   strokeDasharray={score === 0 || score === 100 ? "" : "3 3"}
+                  className="stroke-slate-200 dark:stroke-slate-800/80"
                 />
                 <text
                   x={PADDING.left - 8}
                   y={y + 3}
                   textAnchor="end"
-                  className="fill-slate-400 font-mono text-[9px] font-medium"
+                  className="fill-slate-400 dark:fill-slate-500 font-mono text-[9px] font-medium"
                 >
                   {score}%
                 </text>
@@ -320,6 +321,7 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                   y2={PADDING.top + CHART_HEIGHT}
                   stroke="#F1F5F9"
                   strokeWidth="1"
+                  className="stroke-slate-100 dark:stroke-slate-800/50"
                 />
                 <line
                   x1={x}
@@ -328,12 +330,13 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
                   y2={PADDING.top + CHART_HEIGHT + 4}
                   stroke="#CBD5E1"
                   strokeWidth="1.5"
+                  className="stroke-slate-300 dark:stroke-slate-700"
                 />
                 <text
                   x={x}
                   y={PADDING.top + CHART_HEIGHT + 16}
                   textAnchor="middle"
-                  className="fill-slate-500 font-mono text-[9px] font-semibold"
+                  className="fill-slate-500 dark:fill-slate-400 font-mono text-[9px] font-semibold"
                 >
                   {tick.label}
                 </text>
@@ -442,27 +445,27 @@ export function DecayCurveChart({ claims, simulatedDate }: DecayCurveChartProps)
       </div>
 
       {/* Category Pills & Decay Velocity Cards */}
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 border-t border-slate-100 pt-3.5">
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 border-t border-slate-100 dark:border-slate-800/80 pt-3.5">
         {computedCurves.map(({ category, halfLifeDays, count, style }) => {
           return (
             <div
               key={category}
-              className="flex items-center gap-2.5 rounded-2xl border border-slate-200/70 bg-gradient-to-r from-white to-slate-50/50 p-2.5 shadow-2xs transition-all hover:border-slate-300 hover:shadow-xs"
+              className="flex items-center gap-2.5 rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-gradient-to-r from-white to-slate-50/50 dark:from-slate-900/90 dark:to-[#0D1527] p-2.5 shadow-2xs transition-all hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xs"
             >
               <div
-                className="h-3 w-3 rounded-full shrink-0 shadow-2xs ring-2 ring-white"
+                className="h-3 w-3 rounded-full shrink-0 shadow-2xs ring-2 ring-white dark:ring-slate-800"
                 style={{ backgroundColor: style.stroke }}
               />
               <div className="overflow-hidden">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-mono text-[11px] font-bold text-slate-900 truncate">
+                  <span className="font-mono text-[11px] font-bold text-slate-900 dark:text-slate-100 truncate">
                     {category}
                   </span>
-                  <span className="rounded-md bg-slate-100 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-slate-600 border border-slate-200">
+                  <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                     {count}
                   </span>
                 </div>
-                <span className="block font-mono text-[9px] text-slate-500 truncate">
+                <span className="block font-mono text-[9px] text-slate-500 dark:text-slate-400 truncate">
                   {halfLifeDays > 0 ? `t½ = ${halfLifeDays}d (${style.velocity})` : "Static / ∞"}
                 </span>
               </div>
